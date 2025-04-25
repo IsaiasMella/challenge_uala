@@ -3,8 +3,8 @@ export interface Transaction {
   amount: number;
   card: Card;
   installments: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string | Date;
+  updatedAt: string | Date;
   paymentMethod: PaymentMethod;
 }
 

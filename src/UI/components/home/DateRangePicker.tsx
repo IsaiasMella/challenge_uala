@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-
 import Image from "next/image";
-
 import { utils, writeFile } from "xlsx";
 import { DateRange } from "react-day-picker";
 import { es } from "date-fns/locale";
 import { addDays } from "date-fns";
+import moment from "moment";
+import "moment/locale/es";
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/common/popover";
 import { Button } from "@/common/button";
@@ -23,21 +23,20 @@ export function DateRangePicker() {
 
   const disabledDays = {
     from: addDays(new Date(), 1),
-    to: new Date("2026-01-01"), //Todas las fechas pertenecen a 2025, tambien lo indica el PDF
+    to: moment("2026-01-01").toDate(), //Todas las fechas pertenecen a 2025, tambien lo indica el PDF
   };
 
   const handleDownload = () => {
     if (!date?.from || !transactions) return;
 
-    const fromDate = date.from;
-    const toDate = date.to || date.from;
+    const fromDate = moment(date.from);
+    const toDate = moment(date.to || date.from);
     const book = utils.book_new();
 
     const filteredTransactions = transactions.filter((transaction) => {
-      const transactionDate = new Date(transaction.createdAt);
-      const adjustedToDate = new Date(toDate);
-      adjustedToDate.setHours(23, 59, 59, 999);
-      return transactionDate >= fromDate && transactionDate <= adjustedToDate;
+      const transactionDate = moment(transaction.createdAt);
+      const adjustedToDate = moment(toDate).endOf('day');
+      return transactionDate.isBetween(fromDate, adjustedToDate, undefined, '[]');
     });
 
     if (filteredTransactions.length === 0) {
@@ -54,8 +53,8 @@ export function DateRangePicker() {
       Monto: transaction.amount,
       Tarjeta: transaction.card,
       Cuotas: transaction.installments,
-      "Fecha de Creación": new Date(transaction.createdAt).toLocaleDateString(),
-      "Fecha de Actualización": new Date(transaction.updatedAt).toLocaleDateString(),
+      "Fecha de Creación": moment(transaction.createdAt).format('L'),
+      "Fecha de Actualización": moment(transaction.updatedAt).format('L'),
       "Método de Pago": transaction.paymentMethod,
     }));
 

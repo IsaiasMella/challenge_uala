@@ -1,26 +1,26 @@
 import { useMemo } from "react";
 import { Transaction } from "@/types/transactions";
 import { TIME_RANGES } from "@/constants";
+import moment from "moment";
+import "moment/locale/es";
 
 export const useFilteredTransactions = (transactions: Transaction[], range: string) => {
   const getDateRange = (range: string) => {
-    const now = new Date();
-    const startDate = new Date(now);
+    const now = moment();
+    const startDate = moment(now);
 
     switch (range) {
       case TIME_RANGES.DIARIO:
-        startDate.setHours(0, 0, 0, 0);
-        return { startDate, endDate: new Date(now.setHours(23, 59, 59, 999)) };
+        startDate.startOf('day');
+        return { startDate, endDate: moment(now).endOf('day') };
       case TIME_RANGES.SEMANAL:
-        startDate.setDate(now.getDate() - 6);
-        startDate.setHours(0, 0, 0, 0);
-        return { startDate, endDate: new Date(now.setHours(23, 59, 59, 999)) };
+        startDate.subtract(6, 'days').startOf('day');
+        return { startDate, endDate: moment(now).endOf('day') };
       case TIME_RANGES.MENSUAL:
-        startDate.setDate(1);
-        startDate.setHours(0, 0, 0, 0);
-        return { startDate, endDate: new Date(now.setHours(23, 59, 59, 999)) };
+        startDate.startOf('month');
+        return { startDate, endDate: moment(now).endOf('day') };
       default:
-        return { startDate: new Date(0), endDate: now };
+        return { startDate: moment(0), endDate: now };
     }
   };
 
@@ -30,8 +30,8 @@ export const useFilteredTransactions = (transactions: Transaction[], range: stri
     const { startDate, endDate } = getDateRange(range);
 
     return transactions.filter((transaction) => {
-      const transactionDate = new Date(transaction.createdAt);
-      return transactionDate >= startDate && transactionDate <= endDate;
+      const transactionDate = moment(transaction.createdAt);
+      return transactionDate.isBetween(startDate, endDate, undefined, '[]');
     });
   }, [transactions, range]);
 };

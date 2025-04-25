@@ -1,7 +1,10 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import Image from "next/image";
+import moment from "moment";
+import "moment/locale/es";
+
 import { DateRangePicker } from "@/UI/components/home/DateRangePicker";
 import { SkeletonCollection } from "@/UI/components/home/skeletons/collection";
 import { useTransactionStore } from "@/store/transactionStore";
@@ -15,16 +18,16 @@ const getPaymentMethod = (method: string) => {
 };
 
 export const TransactionHistory = () => {
-  const { transactions, isLoading, error } = useTransactionStore();
+  const { transactions, isLoading, error, fetchTransactions } = useTransactionStore();
   const { selectedRange } = useRangeStore();
   const filteredTransactions = useFilteredTransactions(transactions, selectedRange);
 
+  useEffect(() => {
+    fetchTransactions();
+  }, [fetchTransactions]);
+
   const formatDate = useCallback((date: string | Date) => {
-    return new Date(date).toLocaleDateString("es-ES", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
+    return moment(date).format('DD/MM/YYYY');
   }, []);
 
   return (

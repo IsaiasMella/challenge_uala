@@ -1,5 +1,7 @@
 import { TIME_RANGES } from "@/constants";
 import { ValueOf } from "next/dist/shared/lib/constants";
+import moment from "moment";
+import "moment/locale/es";
 
 /**
  * Gets the date range for a given time range.
@@ -8,27 +10,25 @@ import { ValueOf } from "next/dist/shared/lib/constants";
  */
 
 interface GetDateRange {
-  startDate: Date;
-  endDate: Date;
+  startDate: moment.Moment;
+  endDate: moment.Moment;
 }
 
 export const getDateRange = (range: ValueOf<typeof TIME_RANGES>): GetDateRange => {
-  const now = new Date();
-  const startDate = new Date(now);
+  const now = moment();
+  const startDate = moment(now);
 
   switch (range) {
     case TIME_RANGES.DIARIO:
-      startDate.setHours(0, 0, 0, 0);
-      return { startDate, endDate: new Date(now.setHours(23, 59, 59, 999)) };
+      startDate.startOf('day');
+      return { startDate, endDate: moment(now).endOf('day') };
     case TIME_RANGES.SEMANAL:
-      startDate.setDate(now.getDate() - 6);
-      startDate.setHours(0, 0, 0, 0);
-      return { startDate, endDate: new Date(now.setHours(23, 59, 59, 999)) };
+      startDate.subtract(6, 'days').startOf('day');
+      return { startDate, endDate: moment(now).endOf('day') };
     case TIME_RANGES.MENSUAL:
-      startDate.setDate(1);
-      startDate.setHours(0, 0, 0, 0);
-      return { startDate, endDate: new Date(now.setHours(23, 59, 59, 999)) };
+      startDate.startOf('month');
+      return { startDate, endDate: moment(now).endOf('day') };
     default:
-      return { startDate: new Date(0), endDate: now };
+      return { startDate: moment(0), endDate: now };
   }
 };
