@@ -1,0 +1,14 @@
+<svg 
+  width="360" 
+  height="56" 
+  viewBox="0 0 360 56" 
+  fill="none" 
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path 
+    d="M0 0H360V56H32C14.3269 56 0 41.6731 0 24V0Z" 
+    fill="#ffffff" 
+    stroke="#ffffff"
+    stroke-width="1"
+  />
+</svg>

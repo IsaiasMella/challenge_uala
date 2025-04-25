@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #fafafa;
+    --foreground: #565656;
+    --tertiary: #dee2ec;
+    --blue-uala: #022a9a;
+    --blue-uala-dark: #002066;
+    --toaster-offset: 1rem;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans min-h-screen text-sm;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+[data-sonner-toaster] {
+  position: fixed !important;
+  bottom: var(--toaster-offset) !important;
+}
+
+@media (min-width: 640px) {
+  [data-sonner-toaster] {
+    left: auto !important;
+    right: var(--toaster-offset) !important;
+    transform: none !important;
+  }
+}
