@@ -22,13 +22,13 @@ export const TransactionHistory = () => {
   const { selectedRange } = useRangeStore();
   const filteredTransactions = useFilteredTransactions(transactions, selectedRange);
 
-  useEffect(() => {
-    fetchTransactions();
-  }, [fetchTransactions]);
-
   const formatDate = useCallback((date: string | Date) => {
     return moment(date).format('DD/MM/YYYY');
   }, []);
+
+  useEffect(() => {
+    fetchTransactions();
+  }, [fetchTransactions]);
 
   return (
     <section className="my-8">

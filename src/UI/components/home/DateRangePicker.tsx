@@ -14,17 +14,13 @@ import { Button } from "@/common/button";
 import { Calendar } from "@/common/calendar";
 import { useTransactionStore } from "@/store/transactionStore";
 import { toast } from "sonner";
+import { disabledCalendarDays } from "@/features/helpers/disabledCalendarDays";
 
 export function DateRangePicker() {
   const [date, setDate] = useState<DateRange | undefined>();
   const [open, setOpen] = useState(false);
 
   const { transactions } = useTransactionStore();
-
-  const disabledDays = {
-    from: addDays(new Date(), 1),
-    to: moment("2026-01-01").toDate(), //Todas las fechas pertenecen a 2025, tambien lo indica el PDF
-  };
 
   const handleDownload = () => {
     if (!date?.from || !transactions) return;
@@ -86,7 +82,7 @@ export function DateRangePicker() {
             locale={es}
             selected={date}
             onSelect={setDate}
-            disabled={disabledDays}
+            disabled={disabledCalendarDays}
             weekStartsOn={0}
             hideHead={false}
             showOutsideDays={true}

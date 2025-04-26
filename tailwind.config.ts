@@ -19,6 +19,7 @@ const config: Config = {
         foreground: "var(--foreground)",
         tertiary: "var(--tertiary)",
         "blue-uala": "var(--blue-uala)",
+        "blue-uala-ligther": "var(--blue-uala-ligther)",
         "blue-uala-dark": "var(--blue-uala-dark)",
       },
     },
