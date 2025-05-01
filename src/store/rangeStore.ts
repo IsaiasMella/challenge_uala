@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { TIME_RANGES } from "@/constants";
+import { TIME_RANGES } from "@/constants/home/home";
 import { ValueOf } from "next/dist/shared/lib/constants";
 
 interface RangeState {

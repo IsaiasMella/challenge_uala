@@ -1,4 +1,4 @@
-import { TIME_RANGES } from "@/constants";
+import { TIME_RANGES } from "@/constants/home/home";
 import { ValueOf } from "next/dist/shared/lib/constants";
 import moment from "moment";
 import "moment/locale/es";

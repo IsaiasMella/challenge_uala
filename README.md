@@ -1,4 +1,4 @@
-[] Crear UI filtros
+[✅] Crear UI filtros
 [] Generar filtros, pero que solo sean aplicados una vez se apreta el boton de "Aplicar filtros"
 [] Hacer factory de botones
 [] Hacer Navbar Mobile
@@ -8,4 +8,8 @@
 [] Corregir proyecto, ver que cosas estan repetidas y ponerlo en condiciones de entregar
 [] Hacer test
 [] Hacer README
-[] Crear proyecto nuevo SIN TURBOPACK
+
+
+#Nice to have
+
+[] Hacer que los filtros esten en URL para poder guardarlos al renderizar

@@ -1,63 +1,182 @@
 "use client";
 
 import { useCallback, useState, useMemo } from "react";
+
 import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
+
+import { DateRange } from "react-day-picker";
 
 import { Switch } from "@/common/switch";
 import { Button } from "@/common/button";
-import { Sheet, SheetContent, SheetHeader, SheetTrigger, SheetClose } from "@/common/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTrigger, SheetClose, SheetTitle } from "@/common/sheet";
 
 import { cn } from "../../../features/utils/style/cn";
 
-import { FILTERS, INITIAL_ACTIVE_FILTERS_STATE } from "@/constants/home/filters-sidebar/filters";
+import {
+  FILTERS,
+  SEPARATORS,
+  URL_PARAMS,
+  DEFAULT_AMOUNT_VALUES,
+  INITIAL_FILTERS_STATE,
+  INITIAL_ACTIVE_FILTERS_STATE
+} from "@/constants/home/filters-sidebar/filters";
 
-import type { FilterId } from "@/types/sections/home/filterSidebar";
-
-// const INITIAL_STATE: FilterState = {
-//   date: undefined,
-//   card: [],
-//   installments: [],
-//   amount: { min: 0, max: 500 },
-//   paymentMethod: "",
-//   method: []
-// };
+import type { FilterId, FilterState } from "@/types/sections/home/filterSidebar";
 
 export const FilterSidebar = () => {
-  // Estado que almacena los valores actuales de cada filtro
-  // const [filterValues, setFilterValues] = useState<FilterState>(INITIAL_STATE);
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // <------------------------- SE ENCARGAN de saber si hay algun filtro activo y cuantos filtros están activos ------------------------->
-  const [activeFilters, setActiveFilters] = useState<Record<FilterId, boolean>>(INITIAL_ACTIVE_FILTERS_STATE);
-  
+  const [filterValues, setFilterValues] = useState<FilterState>(() => {
+    // Inicializar desde los parámetros de URL si existen
+    const params = new URLSearchParams(searchParams.toString());
+
+    // Función helper para parsear el DateRange
+    const parseDateRange = (dateStr: string | null): DateRange | undefined => {
+      if (!dateStr) return undefined;
+      try {
+        const [from, to] = dateStr.split(SEPARATORS.DATE_RANGE).map(d => new Date(d));
+        return { from, to };
+      } catch {
+        return undefined;
+      }
+    };
+
+    const initialState: FilterState = {
+      date: parseDateRange(params.get(URL_PARAMS.DATE)),
+      card: params.get(URL_PARAMS.CARD)?.split(SEPARATORS.ARRAY).filter(Boolean) || [],
+      installments: params.get(URL_PARAMS.INSTALLMENTS)?.split(SEPARATORS.ARRAY).filter(Boolean) || [],
+      amount: {
+        min: Number(params.get(URL_PARAMS.AMOUNT_MIN)) || DEFAULT_AMOUNT_VALUES.AMOUNT.MIN,
+        max: Number(params.get(URL_PARAMS.AMOUNT_MAX)) || DEFAULT_AMOUNT_VALUES.AMOUNT.MAX
+      },
+      paymentMethod: params.get(URL_PARAMS.PAYMENT_METHOD)?.split(SEPARATORS.ARRAY).filter(Boolean) || [],
+    };
+
+    return initialState;
+  });
+
+  // Inicializar activeFilters basado en los valores de la URL
+  const [activeFilters, setActiveFilters] = useState<Record<FilterId, boolean>>(() => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    return {
+      date: !!params.get(URL_PARAMS.DATE),
+      card: (params.get(URL_PARAMS.CARD) || '').split(SEPARATORS.ARRAY).filter(Boolean).length > 0,
+      installments: (params.get(URL_PARAMS.INSTALLMENTS) || '').split(SEPARATORS.ARRAY).filter(Boolean).length > 0,
+      amount: params.has(URL_PARAMS.AMOUNT_MIN) || params.has(URL_PARAMS.AMOUNT_MAX),
+      paymentMethod: !!params.get(URL_PARAMS.PAYMENT_METHOD),
+    };
+  });
+
   const switchToggle = useCallback((id: FilterId) => {
-    setActiveFilters(prev => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  }, []);
+    setActiveFilters(prev => {
+      const newActiveFilters = {
+        ...prev,
+        [id]: !prev[id]
+      };
+
+      // Si se está apagando el switch, actualizar la URL y resetear el valor del filtro
+      if (!newActiveFilters[id]) {
+        const params = new URLSearchParams(searchParams.toString());
+
+        switch (id) {
+          case 'date':
+            params.delete(URL_PARAMS.DATE);
+            setFilterValues(prev => ({ ...prev, date: undefined }));
+            break;
+          case 'card':
+            params.delete(URL_PARAMS.CARD);
+            setFilterValues(prev => ({ ...prev, card: [] }));
+            break;
+          case 'installments':
+            params.delete(URL_PARAMS.INSTALLMENTS);
+            setFilterValues(prev => ({ ...prev, installments: [] }));
+            break;
+          case 'amount':
+            params.delete(URL_PARAMS.AMOUNT_MIN);
+            params.delete(URL_PARAMS.AMOUNT_MAX);
+            setFilterValues(prev => ({
+              ...prev,
+              amount: {
+                min: DEFAULT_AMOUNT_VALUES.AMOUNT.MIN,
+                max: DEFAULT_AMOUNT_VALUES.AMOUNT.MAX
+              }
+            }));
+            break;
+          case 'paymentMethod':
+            params.delete(URL_PARAMS.PAYMENT_METHOD);
+            setFilterValues(prev => ({ ...prev, paymentMethod: [] }));
+            break;
+        }
+
+        // Actualizar la URL sin recargar la página
+        router.push(`?${params.toString()}`, { scroll: false });
+      }
+
+      return newActiveFilters;
+    });
+  }, [router, searchParams]);
 
   const activeFiltersCount = useMemo(() => {
     return Object.values(activeFilters).filter(Boolean).length;
   }, [activeFilters]);
 
-  const clearFilters = useCallback(() => {
-    setActiveFilters(INITIAL_ACTIVE_FILTERS_STATE);
-    // setFilterValues(INITIAL_STATE);
+  const onChangeFilters = useCallback((id: FilterId, value: unknown) => {
+    setFilterValues(prev => ({
+      ...prev,
+      [id]: value
+    }));
   }, []);
 
-  // <------------------------- SE ENCARGAN de saber si hay algun filtro activo y cuantos filtros están activos ------------------------->
-  
-  // Función que actualiza el valor seleccionado de un filtro (por ejemplo, la fecha o el rango de monto)
-  // const handleFilterChange = useCallback((id: FilterId, value: any) => {
-  //   setFilterValues(prev => ({
-  //     ...prev,
-  //     [id]: value,
-  //   }));
-  // }, []);
+  const clearFilters = useCallback(() => {
+    setActiveFilters(INITIAL_ACTIVE_FILTERS_STATE);
+    setFilterValues(INITIAL_FILTERS_STATE);
+  }, []);
 
-  // useEffect(() => {
-  //   console.log(active);
-  // }, [active]);
+  const onSubmitFilters = useCallback((event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const params = new URLSearchParams(searchParams.toString());
+
+    // Actualizar o eliminar parámetros según los valores de los filtros
+    if (filterValues.date?.from && filterValues.date?.to) {
+      const dateStr = `${filterValues.date.from.toISOString()}${SEPARATORS.DATE_RANGE}${filterValues.date.to.toISOString()}`;
+      params.set(URL_PARAMS.DATE, dateStr);
+    } else {
+      params.delete(URL_PARAMS.DATE);
+    }
+
+    if (filterValues.card.length > 0) {
+      params.set(URL_PARAMS.CARD, filterValues.card.join(SEPARATORS.ARRAY));
+    } else {
+      params.delete(URL_PARAMS.CARD);
+    }
+
+    if (filterValues.installments.length > 0) {
+      params.set(URL_PARAMS.INSTALLMENTS, filterValues.installments.join(SEPARATORS.ARRAY));
+    } else {
+      params.delete(URL_PARAMS.INSTALLMENTS);
+    }
+
+    if (filterValues.amount.min > DEFAULT_AMOUNT_VALUES.AMOUNT.MIN || filterValues.amount.max < DEFAULT_AMOUNT_VALUES.AMOUNT.MAX) {
+      params.set(URL_PARAMS.AMOUNT_MIN, filterValues.amount.min.toString());
+      params.set(URL_PARAMS.AMOUNT_MAX, filterValues.amount.max.toString());
+    } else {
+      params.delete(URL_PARAMS.AMOUNT_MIN);
+      params.delete(URL_PARAMS.AMOUNT_MAX);
+    }
+
+    if (filterValues.paymentMethod.length > 0) {
+      params.set(URL_PARAMS.PAYMENT_METHOD, filterValues.paymentMethod.join(SEPARATORS.ARRAY));
+    } else {
+      params.delete(URL_PARAMS.PAYMENT_METHOD);
+    }
+
+    // Actualizar la URL sin recargar la página
+    router.push(`?${params.toString()}`, { scroll: false });
+  }, [filterValues, router, searchParams]);
 
   return (
     <Sheet>
@@ -73,7 +192,7 @@ export const FilterSidebar = () => {
       </SheetTrigger>
 
       <SheetContent side="right" className="w-full p-0 sm:w-[400px] border-l-0">
-        <div className="flex h-full flex-col ">
+        <form className="flex h-full flex-col" onSubmit={onSubmitFilters}>
           <header className="px-6 pt-12 pb-4">
             <div className="mb-8 flex items-center gap-2">
               <SheetClose asChild>
@@ -81,7 +200,7 @@ export const FilterSidebar = () => {
                   <Image src="/common/arrow.svg" width={8} height={14.5} alt="Volver" />
                 </Button>
               </SheetClose>
-              <p className="ml-1 font-semibold">Filtros</p>
+              <SheetTitle className="ml-1 font-semibold">Filtros</SheetTitle>
             </div>
 
             <SheetHeader className="flex flex-row items-center justify-between">
@@ -114,8 +233,10 @@ export const FilterSidebar = () => {
 
                 {activeFilters[id] && (
                   <FilterComponent
-                    // value={filterValues[id]}
-                    // onChange={(value) => {}}
+                    committedFilters={filterValues}
+                    onApply={(newFilters) => {
+                      onChangeFilters(id, newFilters[id]);
+                    }}
                   />
                 )}
               </section>
@@ -124,6 +245,7 @@ export const FilterSidebar = () => {
 
           <footer className="absolute bottom-0 left-0 right-0 z-99 mb-2 px-6">
             <Button
+              type="submit"
               disabled={activeFiltersCount === 0}
               className={cn(
                 "h-12 w-full rounded-full bg-blue-uala text-white hover:bg-blue-uala/90 transition-colors",
@@ -133,7 +255,7 @@ export const FilterSidebar = () => {
               Aplicar filtros
             </Button>
           </footer>
-        </div>
+        </form>
       </SheetContent>
     </Sheet>
   );

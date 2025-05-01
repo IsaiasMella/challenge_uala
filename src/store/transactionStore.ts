@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { Transaction } from "@/types/transactions";
 import { transactions } from "@/features/services/endpoints/transactions";
+import moment from "moment";
 
 interface TransactionState {
   transactions: Transaction[];
@@ -19,7 +20,14 @@ export const useTransactionStore = create<TransactionState>((set) => ({
     try {
       set({ isLoading: true, error: null });
       const response = await transactions.getTransactions();
-      set({ transactions: response.data, isLoading: false });
+      
+      // Filtrar transacciones hasta el día de hoy
+      const today = moment().endOf('day');
+      const filteredTransactions = response.data.filter(transaction => 
+        moment(transaction.createdAt).isSameOrBefore(today)
+      );
+      
+      set({ transactions: filteredTransactions, isLoading: false });
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Error al cargar las transacciones";
       set({ error: errorMessage, isLoading: false });

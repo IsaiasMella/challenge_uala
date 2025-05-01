@@ -1,30 +1,47 @@
 import { FilterComponentProps } from "@/types/sections/home/filterSidebar";
 import { Toggle } from "@/common/toggle";
+import { useFilterSelection } from "@/UI/hooks/useFilterSelection";
+import { TYPE_PAYMENT_METHOD } from "@/constants/home/home";
+import type { PaymentMethod } from "@/types/transactions";
 
-const PAYMENT_METHODS = ["Link de pago", "Código QR", "mPOS", "POS Pro"]
+// Orden específico de los métodos de pago
+const PAYMENT_METHOD_ORDER: PaymentMethod[] = ['link', 'qr', 'mpos', 'pospro'];
 
-export const PaymentMethodFilter: React.FC<FilterComponentProps<string[]>> = ({ value = [], onChange }) => {
-  const handlePress = (filterId: string) => {
-    const newValue = value.includes(filterId)
-      ? value.filter((id: string) => id !== filterId)
-      : [...value, filterId];
-    onChange(newValue);
-  };
+export const PaymentMethodFilter: React.FC<FilterComponentProps<PaymentMethod[]>> = ({ 
+  committedFilters,
+  onApply 
+}) => {
+  const currentSelection = (committedFilters.paymentMethod || []) as PaymentMethod[];
+
+  const { handleSelection, isSelected } = useFilterSelection<PaymentMethod>({
+    options: PAYMENT_METHOD_ORDER,
+    currentSelection,
+    onSelectionChange: (newSelection) => {
+      onApply({
+        ...committedFilters,
+        paymentMethod: newSelection
+      });
+    }
+  });
 
   return (
-    <div className="flex gap-2 mt-3">
-      {PAYMENT_METHODS.map((method) => (
+    <div className="flex flex-wrap gap-2 mt-3">
+      {PAYMENT_METHOD_ORDER.map((key) => (
         <Toggle
-          key={method}
+          key={key}
           variant="default"
-          pressed={value.includes(method)}
-          onPressedChange={() => handlePress(method)}
-          className={`px-3 flex items-center justify-center gap-1 rounded-full border border-blue-uala text-blue-uala ${value.includes(method) && "bg-blue-uala-ligther"}`}
+          pressed={isSelected(key)}
+          onPressedChange={() => handleSelection(key)}
+          className={`
+            px-3 flex items-center justify-center gap-1 
+            rounded-full border border-blue-uala text-blue-uala
+            ${isSelected(key) ? "bg-blue-uala-ligther" : ""}
+          `}
         >
-          <p className="text-[0.6rem]">{method}</p>
-          {value.includes(method) && <p>×</p>}
+          <p className="text-[0.6rem]">{TYPE_PAYMENT_METHOD[key]}</p>
+          {isSelected(key) && <p>×</p>}
         </Toggle>
       ))}
     </div>
   );
-}
+};

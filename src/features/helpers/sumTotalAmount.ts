@@ -3,7 +3,7 @@ import { ValueOf } from "next/dist/shared/lib/constants";
 import { getDateRange } from "./getDateRange";
 import { formatAmount } from "../utils/formatAmount";
 
-import { TIME_RANGES } from "@/constants";
+import { TIME_RANGES } from "@/constants/home/home";
 import type { Transaction } from "@/types/transactions";
 
 interface TotalAmount {

@@ -1,26 +1,31 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import moment from "moment";
 import "moment/locale/es";
+import { useSearchParams } from "next/navigation";
 
+import { useTransactionStore } from "@/store/transactionStore";
+import { 
+  filterByDateRange, 
+  filterByCards, 
+  filterByInstallments, 
+  filterByAmountRange, 
+  filterByPaymentMethods 
+} from "@/features/actions/filterTransactions";
+
+import { FilterSidebar } from "@/UI/components/home/FilterSidebar";
 import { DateRangePicker } from "@/UI/components/home/DateRangePicker";
 import { SkeletonCollection } from "@/UI/components/home/skeletons/collection";
-import { useTransactionStore } from "@/store/transactionStore";
-import { useFilteredTransactions } from "@/hooks/useFilteredTransactions";
-import { useRangeStore } from "@/store/rangeStore";
-import { TYPE_PAYMENT_METHOD } from "@/constants";
-import { FilterSidebar } from "@/UI/components/home/FilterSidebar";
 
-const getPaymentMethod = (method: string) => {
-  return TYPE_PAYMENT_METHOD[method as keyof typeof TYPE_PAYMENT_METHOD] || method;
-};
+import { getPaymentMethod } from "@/features/helpers/getPaymentMethod";
 
 export const TransactionHistory = () => {
   const { transactions, isLoading, error, fetchTransactions } = useTransactionStore();
-  const { selectedRange } = useRangeStore();
-  const filteredTransactions = useFilteredTransactions(transactions, selectedRange);
+  const [filteredTransactions, setFilteredTransactions] = useState(transactions);
+
+  const searchParams = useSearchParams();
 
   const formatDate = useCallback((date: string | Date) => {
     return moment(date).format('DD/MM/YYYY');
@@ -29,6 +34,40 @@ export const TransactionHistory = () => {
   useEffect(() => {
     fetchTransactions();
   }, [fetchTransactions]);
+
+  useEffect(() => {
+    if (!transactions) return;
+
+    // Obtener los parámetros de filtrado
+    const dateStr = searchParams.get('date');
+    const amountMin = searchParams.get('amountMin');
+    const amountMax = searchParams.get('amountMax');
+    const cards = searchParams.get('card')?.split(',').filter(Boolean);
+    const installments = searchParams.get('installments')?.split(',').filter(Boolean);
+    const paymentMethods = searchParams.get('paymentMethod')?.split(',').filter(Boolean);
+
+    // Preparar el rango de fechas
+    let dateRange;
+    if (dateStr) {
+      const [from, to] = dateStr.split('|').map(d => new Date(d));
+      dateRange = { from, to };
+    }
+
+    // Aplicar los filtros secuencialmente
+    let result = transactions;
+    result = filterByDateRange(result, dateRange);
+    result = filterByCards(result, cards);
+    result = filterByInstallments(result, installments);
+    result = filterByAmountRange(result, amountMin || amountMax ? {
+      min: Number(amountMin),
+      max: Number(amountMax)
+    } : undefined);
+    result = filterByPaymentMethods(result, paymentMethods);
+
+    console.log('result', result)
+
+    setFilteredTransactions(result);
+  }, [transactions, searchParams]);
 
   return (
     <section className="my-8">

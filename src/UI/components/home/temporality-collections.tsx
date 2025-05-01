@@ -10,7 +10,7 @@ import { Button } from "@/common/button";
 import { useRangeStore } from "@/store/rangeStore";
 import { sumTotalAmount } from "@/features/helpers/sumTotalAmount";
 
-import { TIME_RANGES } from "@/constants";
+import { TIME_RANGES } from "@/constants/home/home";
 
 export const TemporalityCollections = () => {
   const { selectedRange, setSelectedRange } = useRangeStore(); // TODO: este contexto pasarlo a useContext
