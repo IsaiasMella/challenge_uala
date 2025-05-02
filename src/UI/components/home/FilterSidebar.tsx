@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState, useMemo } from "react";
+import { useCallback, useState, useMemo, useEffect } from "react";
 
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -23,28 +23,35 @@ import {
 } from "@/constants/home/filters-sidebar/filters";
 
 import type { FilterId, FilterState } from "@/types/sections/home/filterSidebar";
+import moment from "moment";
+import "moment/locale/es";
 
 export const FilterSidebar = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const [filterValues, setFilterValues] = useState<FilterState>(() => {
-    // Inicializar desde los parámetros de URL si existen
     const params = new URLSearchParams(searchParams.toString());
 
     // Función helper para parsear el DateRange
-    const parseDateRange = (dateStr: string | null): DateRange | undefined => {
-      if (!dateStr) return undefined;
+    const parseDateRange = (params: URLSearchParams): DateRange | undefined => {
+      const from = params.get(URL_PARAMS.DATE_FROM);
+      const to = params.get(URL_PARAMS.DATE_TO);
+      
+      if (!from && !to) return undefined;
+      
       try {
-        const [from, to] = dateStr.split(SEPARATORS.DATE_RANGE).map(d => new Date(d));
-        return { from, to };
+        return {
+          from: from ? moment(from, 'YYYY-MM-DD').toDate() : undefined,
+          to: to ? moment(to, 'YYYY-MM-DD').toDate() : undefined
+        };
       } catch {
         return undefined;
       }
     };
 
     const initialState: FilterState = {
-      date: parseDateRange(params.get(URL_PARAMS.DATE)),
+      date: parseDateRange(params),
       card: params.get(URL_PARAMS.CARD)?.split(SEPARATORS.ARRAY).filter(Boolean) || [],
       installments: params.get(URL_PARAMS.INSTALLMENTS)?.split(SEPARATORS.ARRAY).filter(Boolean) || [],
       amount: {
@@ -62,13 +69,15 @@ export const FilterSidebar = () => {
     const params = new URLSearchParams(searchParams.toString());
 
     return {
-      date: !!params.get(URL_PARAMS.DATE),
+      date: params.has(URL_PARAMS.DATE_FROM) || params.has(URL_PARAMS.DATE_TO),
       card: (params.get(URL_PARAMS.CARD) || '').split(SEPARATORS.ARRAY).filter(Boolean).length > 0,
       installments: (params.get(URL_PARAMS.INSTALLMENTS) || '').split(SEPARATORS.ARRAY).filter(Boolean).length > 0,
       amount: params.has(URL_PARAMS.AMOUNT_MIN) || params.has(URL_PARAMS.AMOUNT_MAX),
       paymentMethod: !!params.get(URL_PARAMS.PAYMENT_METHOD),
     };
   });
+
+  const [pendingUrlUpdate, setPendingUrlUpdate] = useState<{ params: URLSearchParams; id: FilterId } | null>(null);
 
   const switchToggle = useCallback((id: FilterId) => {
     setActiveFilters(prev => {
@@ -77,13 +86,14 @@ export const FilterSidebar = () => {
         [id]: !prev[id]
       };
 
-      // Si se está apagando el switch, actualizar la URL y resetear el valor del filtro
+      // Si se está apagando el switch, preparar la actualización de la URL
       if (!newActiveFilters[id]) {
         const params = new URLSearchParams(searchParams.toString());
 
         switch (id) {
           case 'date':
-            params.delete(URL_PARAMS.DATE);
+            params.delete(URL_PARAMS.DATE_FROM);
+            params.delete(URL_PARAMS.DATE_TO);
             setFilterValues(prev => ({ ...prev, date: undefined }));
             break;
           case 'card':
@@ -111,13 +121,19 @@ export const FilterSidebar = () => {
             break;
         }
 
-        // Actualizar la URL sin recargar la página
-        router.push(`?${params.toString()}`, { scroll: false });
+        setPendingUrlUpdate({ params, id });
       }
 
       return newActiveFilters;
     });
-  }, [router, searchParams]);
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (pendingUrlUpdate) {
+      router.push(`?${pendingUrlUpdate.params.toString()}`, { scroll: false });
+      setPendingUrlUpdate(null);
+    }
+  }, [pendingUrlUpdate, router]);
 
   const activeFiltersCount = useMemo(() => {
     return Object.values(activeFilters).filter(Boolean).length;
@@ -140,36 +156,59 @@ export const FilterSidebar = () => {
 
     const params = new URLSearchParams(searchParams.toString());
 
-    // Actualizar o eliminar parámetros según los valores de los filtros
-    if (filterValues.date?.from && filterValues.date?.to) {
-      const dateStr = `${filterValues.date.from.toISOString()}${SEPARATORS.DATE_RANGE}${filterValues.date.to.toISOString()}`;
-      params.set(URL_PARAMS.DATE, dateStr);
+    // Manejo de fechas
+    if (!filterValues.date?.from && !filterValues.date?.to) {
+      params.delete(URL_PARAMS.DATE_FROM);
+      params.delete(URL_PARAMS.DATE_TO);
     } else {
-      params.delete(URL_PARAMS.DATE);
+      if (filterValues.date.from) {
+        params.set(URL_PARAMS.DATE_FROM, moment(filterValues.date.from).format('YYYY-MM-DD'));
+      } else {
+        params.delete(URL_PARAMS.DATE_FROM);
+      }
+      
+      if (filterValues.date.to) {
+        params.set(URL_PARAMS.DATE_TO, moment(filterValues.date.to).format('YYYY-MM-DD'));
+      } else {
+        params.delete(URL_PARAMS.DATE_TO);
+      }
+
+      setActiveFilters(prev => ({
+        ...prev,
+        date: true
+      }));
     }
 
+    // Manejo de tarjetas
     if (filterValues.card.length > 0) {
       params.set(URL_PARAMS.CARD, filterValues.card.join(SEPARATORS.ARRAY));
+      setActiveFilters(prev => ({ ...prev, card: true }));
     } else {
       params.delete(URL_PARAMS.CARD);
     }
 
+    // Manejo de cuotas
     if (filterValues.installments.length > 0) {
       params.set(URL_PARAMS.INSTALLMENTS, filterValues.installments.join(SEPARATORS.ARRAY));
+      setActiveFilters(prev => ({ ...prev, installments: true }));
     } else {
       params.delete(URL_PARAMS.INSTALLMENTS);
     }
 
-    if (filterValues.amount.min > DEFAULT_AMOUNT_VALUES.AMOUNT.MIN || filterValues.amount.max < DEFAULT_AMOUNT_VALUES.AMOUNT.MAX) {
+    // Manejo de montos
+    if (filterValues.amount.min >= DEFAULT_AMOUNT_VALUES.AMOUNT.MIN || filterValues.amount.max <= DEFAULT_AMOUNT_VALUES.AMOUNT.MAX) {
       params.set(URL_PARAMS.AMOUNT_MIN, filterValues.amount.min.toString());
       params.set(URL_PARAMS.AMOUNT_MAX, filterValues.amount.max.toString());
+      setActiveFilters(prev => ({ ...prev, amount: true }));
     } else {
       params.delete(URL_PARAMS.AMOUNT_MIN);
       params.delete(URL_PARAMS.AMOUNT_MAX);
     }
 
+    // Manejo de métodos de pago
     if (filterValues.paymentMethod.length > 0) {
       params.set(URL_PARAMS.PAYMENT_METHOD, filterValues.paymentMethod.join(SEPARATORS.ARRAY));
+      setActiveFilters(prev => ({ ...prev, paymentMethod: true }));
     } else {
       params.delete(URL_PARAMS.PAYMENT_METHOD);
     }
@@ -181,7 +220,7 @@ export const FilterSidebar = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <div className="relative">
+        <div className="relative ">
           <Image src="/common/filters.svg" width={24} height={24} alt="Abrir filtros" className="cursor-pointer" />
           {activeFiltersCount > 0 && (
             <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-blue-uala text-xs text-white">
@@ -191,7 +230,7 @@ export const FilterSidebar = () => {
         </div>
       </SheetTrigger>
 
-      <SheetContent side="right" className="w-full p-0 sm:w-[400px] border-l-0">
+      <SheetContent side="right" className="w-full p-0 sm:w-[400px] border-l-0 pt-8">
         <form className="flex h-full flex-col" onSubmit={onSubmitFilters}>
           <header className="px-6 pt-12 pb-4">
             <div className="mb-8 flex items-center gap-2">

@@ -3,19 +3,28 @@ import { Slider } from "@/common/slider";
 
 import type { FilterComponentProps } from "@/types/sections/home/filterSidebar";
 
-export const AmountFilter: React.FC<FilterComponentProps<{ min: number; max: number }>> = ({ value, onChange }) => {
+export const AmountFilter: React.FC<FilterComponentProps<{ min: number; max: number }>> = ({ committedFilters, onApply }) => {
     const handleSliderChange = (newValue: number[]) => {
-        onChange({ min: newValue[0], max: newValue[1] });
+        onApply({
+            ...committedFilters,
+            amount: { min: newValue[0], max: newValue[1] }
+        });
     };
 
     const handleMinInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newMin = Number(e.target.value);
-        onChange({ ...value, min: newMin });
+        onApply({
+            ...committedFilters,
+            amount: { ...committedFilters.amount, min: newMin }
+        });
     };
 
     const handleMaxInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newMax = Number(e.target.value);
-        onChange({ ...value, max: newMax });
+        onApply({
+            ...committedFilters,
+            amount: { ...committedFilters.amount, max: newMax }
+        });
     };
 
     return (
@@ -25,7 +34,7 @@ export const AmountFilter: React.FC<FilterComponentProps<{ min: number; max: num
                 max={2000}
                 min={0}
                 step={10}
-                value={[value?.min || 0, value?.max || 500]}
+                value={[committedFilters.amount?.min || 0, committedFilters.amount?.max || 500]}
                 onValueChange={handleSliderChange}
                 className="pt-5"
             />
@@ -36,9 +45,8 @@ export const AmountFilter: React.FC<FilterComponentProps<{ min: number; max: num
                         <small className="text-black">$</small>
                         <Input
                             type="number"
-                            placeholder="$0"
-                            defaultValue={value?.min}
-                            value={value?.min}
+                            placeholder="0"
+                            value={committedFilters.amount?.min}
                             onChange={handleMinInputChange}
                             className="w-[60px] min-w-0 bg-transparent border-none px-1 h-1 my-0 text-black"
                         />
@@ -50,9 +58,8 @@ export const AmountFilter: React.FC<FilterComponentProps<{ min: number; max: num
                         <small className="text-black">$</small>
                         <Input
                             type="number"
-                            placeholder="$2000"
-                            defaultValue={value?.max}
-                            value={value?.max}
+                            placeholder="2000"
+                            value={committedFilters.amount?.max}
                             onChange={handleMaxInputChange}
                             className="w-[60px] min-w-0 bg-transparent border-none px-1 h-1 my-0 text-black"
                         />

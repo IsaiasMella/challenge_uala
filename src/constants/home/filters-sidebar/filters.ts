@@ -7,17 +7,18 @@ import { PaymentMethodFilter } from "@/UI/components/home/filter-sidebar/Payment
 import type { FilterConfig, FilterId, FilterState } from "@/types/sections/home/filterSidebar";
 
 export const FILTERS: FilterConfig<any>[] = [
-    // { id: "date", label: "Fecha", icon: "/calendar.svg", component: DateFilter },
+    { id: "date", label: "Fecha", icon: "/calendar.svg", component: DateFilter },
     { id: "card", label: "Tarjeta", icon: "/credit_card.svg", component: CardFilter },
     { id: "installments", label: "Cuotas", icon: "/cuotas.svg", component: InstallmentsFilter },
-    // { id: "amount", label: "Monto", icon: "/cash.svg", component: AmountFilter },
+    { id: "amount", label: "Monto", icon: "/cash.svg", component: AmountFilter },
     { id: "paymentMethod", label: "Método de cobro", icon: "/folder.svg", component: PaymentMethodFilter },
 ];
 
 export const ALL = "Todas" as const;
 
 export const URL_PARAMS = {
-    DATE: 'date',
+    DATE_FROM: 'date_from',
+    DATE_TO: 'date_to',
     CARD: 'card',
     INSTALLMENTS: 'installments',
     AMOUNT_MIN: 'amountMin',

@@ -1,6 +1,6 @@
 import { Toggle } from "@/common/toggle";
 import type { FilterComponentProps } from "@/types/sections/home/filterSidebar";
-import { useFilterSelection } from "@/UI/hooks/useFilterSelection";
+import { useFilterSelection } from "@/hooks/useFilterSelection";
 
 const ALL = "Todas" as const;
 const PAYMENT_CARDS = ["Visa", "Mastercard", "Amex"] as const;

@@ -1,6 +1,6 @@
 import { FilterComponentProps } from "@/types/sections/home/filterSidebar";
 import { Toggle } from "@/common/toggle";
-import { useFilterSelection } from "@/UI/hooks/useFilterSelection";
+import { useFilterSelection } from "@/hooks/useFilterSelection";
 import { TYPE_PAYMENT_METHOD } from "@/constants/home/home";
 import type { PaymentMethod } from "@/types/transactions";
 

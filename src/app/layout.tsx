@@ -1,10 +1,11 @@
-import Image from "next/image";
 import type { Metadata } from "next";
 import { Public_Sans } from "next/font/google";
 
 import { Providers } from "@/providers/Providers";
+import { NavBar } from "@/common/NavBar";
 
 import "./globals.css";
+import { RoutesSideBar } from "@/common/NavBar/RoutesSideBar";
 
 const publicSans = Public_Sans({
   subsets: ["latin"],
@@ -33,35 +34,15 @@ export default function RootLayout({
       </head>
       <body className="antialiased m-auto h-screen" style={{ fontFamily: publicSans.style.fontFamily }}>
         <Providers>
-          <nav className="fixed w-full top-0 z-[100]">
-            <div className="w-full absolute -top-1 left-0">
-              <div className="relative h-[56px]">
-                <Image
-                  className="w-full object-contain sm:object-cover"
-                  src="/nav-bar_wave/TAB_Container.svg"
-                  alt="Nav Bar"
-                  fill
-                  style={{ filter: "drop-shadow(0px 1px 1px #DEE2EC)" }}
-                />
-              </div>
-              <div className="relative">
-                <Image
-                  src="/nav-bar_wave/Subtract.svg"
-                  className="absolute -top-1 right-0 sm:top-0"
-                  style={{ filter: "drop-shadow(0px 1px 1px #DEE2EC)" }}
-                  alt="Nav Bar"
-                  width={56}
-                  height={56}
-                />
-              </div>
+          <NavBar />
+          <div className="flex">
+            <div className="hidden sm:flex">
+              <RoutesSideBar />
             </div>
-            <div className="w-10/12 m-auto">
-              <div className="flex">
-                <Image className="h-[50px] my-auto" src="/nav-bar/hamburguer.svg" alt="Nav Bar" width={16} height={16} />
-              </div>
-            </div>
-          </nav>
-          <main className="w-10/12 m-auto pt-[72px]">{children}</main>
+            <main className="w-10/12 sm:w-5/12 m-auto pt-[88px]">
+              {children}
+            </main>
+          </div>
         </Providers>
       </body>
     </html>
