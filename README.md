@@ -4,22 +4,23 @@
 [✅] Hacer Navbar Mobile
 [✅] Hacer navBar deskyop
 [✅] Hacer sidebar desktop
-[] Solucionar el problema del primer render que no carga la lista
-[] Hacer empty state para cuando filtras y no hay nada
-[] Hacer que los filtros de "Diario", "Semanal" y "Mensual" tambien afecten la lista de transactions
-[] Agregar Eslint y prettier
+[⚠️] Solucionar el problema del primer render que no carga la lista (probablente se arregle en produccion)
+[✅] Hacer empty state para cuando filtras y no hay nada
+[🤔] Hacer que los filtros de "Diario", "Semanal" y "Mensual" tambien afecten la lista de transactions (en la app de uala no filtra por dias, seman, mes la lista)
+[✅] Agregar Eslint y prettier
 [] Corregir proyecto, ver que cosas estan repetidas y ponerlo en condiciones de entregar
+[] Se rompiero varias cosas, hay que arreglarlas:
+    [] filtro de "Diario", "semanal", "mensual"
+    [] al hacer click en "aplicar cambios" te coloca el filtro de rango de precios si o si
 [] Hacer test
 [] Modificar estilos para desktop
 [] Hacer README
-
 
 #Nice to have
 
 [] cerealizar los filtros en base 64
 [] Hacer factory de botones
 [] Agregar hasky
-
 
 # Web Developer Challenge – Ualá
 
@@ -38,12 +39,13 @@ Una aplicación web para visualizar, filtrar y exportar transacciones, implement
 
 2. **Instala dependencias**
 
-   * Con pnpm (recomendado):
+   - Con pnpm (recomendado):
 
      ```bash
      pnpm install
      ```
-   * Con npm (opción alternativa):
+
+   - Con npm (opción alternativa):
 
      ```bash
      npm install
@@ -51,12 +53,13 @@ Una aplicación web para visualizar, filtrar y exportar transacciones, implement
 
 3. **Levanta el servidor en modo desarrollo**
 
-   * Con pnpm:
+   - Con pnpm:
 
      ```bash
      pnpm dev
      ```
-   * Con npm:
+
+   - Con npm:
 
      ```bash
      npm run dev
@@ -170,31 +173,31 @@ Una aplicación web para visualizar, filtrar y exportar transacciones, implement
 
 ## ⚙️ Decisiones técnicas tomadas
 
-* Uso de Next.js 15
-* Gestión de estado con Zustand
-* Patrón Draft + Commit para filtros
-* Organización modular de componentes (carpeta `common`, `UI`, `features`, etc.)
-* Rutas API en `app/api/transactions/filter/route.ts`
-* Tipado estricto con TypeScript
-* Configuración de ESLint y Prettier
-* Compatibilidad pnpm / npm
-* Integración de React Query (`QueryProvider`)
-* Uso de shadcn/ui y componentes personalizados
+- Uso de Next.js 15
+- Gestión de estado con Zustand
+- Patrón Draft + Commit para filtros
+- Organización modular de componentes (carpeta `common`, `UI`, `features`, etc.)
+- Rutas API en `app/api/transactions/filter/route.ts`
+- Tipado estricto con TypeScript
+- Configuración de ESLint y Prettier
+- Compatibilidad pnpm / npm
+- Integración de React Query (`QueryProvider`)
+- Uso de shadcn/ui y componentes personalizados
 
-*(Descripción de cada punto por completar…)*
+_(Descripción de cada punto por completar…)_
 
 ---
 
 ## 🚀 Posibles mejoras a futuro
 
-* Implementar autenticación y gestión de usuarios
-* Caché y revalidación de datos avanzada
-* Tests end-to-end con Cypress o Playwright
-* Documentación de componentes con Storybook
-* Internacionalización (i18n)
-* Mejora de accesibilidad (a11y)
-* Optimización de rendimiento (lazy loading y code splitting)
+- Implementar autenticación y gestión de usuarios
+- Caché y revalidación de datos avanzada
+- Tests end-to-end con Cypress o Playwright
+- Documentación de componentes con Storybook
+- Internacionalización (i18n)
+- Mejora de accesibilidad (a11y)
+- Optimización de rendimiento (lazy loading y code splitting)
 
-*(Detalles y prioridades por completar…)*
+_(Detalles y prioridades por completar…)_
 
 ---

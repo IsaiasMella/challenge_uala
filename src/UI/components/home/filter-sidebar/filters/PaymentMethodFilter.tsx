@@ -5,13 +5,13 @@ import { TYPE_PAYMENT_METHOD } from "@/constants/home/home";
 import type { PaymentMethod } from "@/types/transactions";
 
 // Orden específico de los métodos de pago
-const PAYMENT_METHOD_ORDER: PaymentMethod[] = ['link', 'qr', 'mpos', 'pospro'];
+const PAYMENT_METHOD_ORDER: PaymentMethod[] = ["link", "qr", "mpos", "pospro"];
 
-export const PaymentMethodFilter: React.FC<FilterComponentProps<PaymentMethod[]>> = ({ 
-  committedFilters,
-  onApply 
-}) => {
-  const currentSelection = (committedFilters.paymentMethod || []) as PaymentMethod[];
+export const PaymentMethodFilter: React.FC< 
+FilterComponentProps
+> = ({ committedFilters, onApply }) => {
+  const currentSelection = (committedFilters.paymentMethod ||
+    []) as PaymentMethod[];
 
   const { handleSelection, isSelected } = useFilterSelection<PaymentMethod>({
     options: PAYMENT_METHOD_ORDER,
@@ -19,9 +19,9 @@ export const PaymentMethodFilter: React.FC<FilterComponentProps<PaymentMethod[]>
     onSelectionChange: (newSelection) => {
       onApply({
         ...committedFilters,
-        paymentMethod: newSelection
+        paymentMethod: newSelection,
       });
-    }
+    },
   });
 
   return (

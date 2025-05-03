@@ -6,14 +6,15 @@ const ALL = "Todas" as const;
 const PAYMENT_CARDS = ["Visa", "Mastercard", "Amex"] as const;
 const AVAILABLE_CARDS = [ALL, ...PAYMENT_CARDS] as const;
 
-type CardOption = typeof AVAILABLE_CARDS[number];
+type CardOption = (typeof AVAILABLE_CARDS)[number];
 
-export const CardFilter: React.FC<FilterComponentProps<string[]>> = ({
+export const CardFilter: React.FC<FilterComponentProps> = ({
   committedFilters,
-  onApply
+  onApply,
 }) => {
-  const currentSelection = (committedFilters.card || [])
-    .map(card => card.charAt(0).toUpperCase() + card.slice(1)) as CardOption[];
+  const currentSelection = (committedFilters.card || []).map(
+    (card) => card.charAt(0).toUpperCase() + card.slice(1),
+  ) as CardOption[];
 
   const { handleSelection, isSelected } = useFilterSelection({
     options: AVAILABLE_CARDS,
@@ -22,9 +23,9 @@ export const CardFilter: React.FC<FilterComponentProps<string[]>> = ({
     onSelectionChange: (newSelection) => {
       onApply({
         ...committedFilters,
-        card: newSelection.map(card => card.toLowerCase())
+        card: newSelection.map((card) => card.toLowerCase()),
       });
-    }
+    },
   });
 
   return (

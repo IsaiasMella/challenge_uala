@@ -1,18 +1,23 @@
 import { DateRange } from "react-day-picker";
 import { ComponentType } from "react";
 
-export type FilterId = "date" | "card" | "installments" | "amount" | "paymentMethod";
+export type FilterId =
+  | "date"
+  | "card"
+  | "installments"
+  | "amount"
+  | "paymentMethod";
 
-export interface FilterComponentProps<T> {
-  committedFilters: FilterState;                 // filtros actualmente aplicados (confirmados)
-  onApply: (newFilters: FilterState) => void;
+export interface FilterComponentProps {
+  committedFilters: FilterState;
+  onApply: (_newFilters: FilterState) => void;
 }
 
-export interface FilterConfig<T = unknown> {
+export interface FilterConfig {
   id: FilterId;
   label: string;
   icon: string;
-  component: ComponentType<FilterComponentProps<T>>;
+  component: ComponentType<FilterComponentProps>;
 }
 
 export type FilterState = {
@@ -24,4 +29,4 @@ export type FilterState = {
     max: number;
   };
   paymentMethod: string[];
-}
+};

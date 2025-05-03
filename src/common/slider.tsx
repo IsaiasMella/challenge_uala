@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import * as SliderPrimitive from "@radix-ui/react-slider"
+import * as React from "react";
+import * as SliderPrimitive from "@radix-ui/react-slider";
 
-import { cn } from "../features/utils/style/cn"
+import { cn } from "../features/utils/style/cn";
 
 interface SliderProps
   extends React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root> {}
@@ -16,7 +16,7 @@ const Slider = React.forwardRef<
     ref={ref}
     className={cn(
       "relative flex w-full touch-none select-none items-center",
-      className
+      className,
     )}
     {...props}
   >
@@ -25,7 +25,7 @@ const Slider = React.forwardRef<
     </SliderPrimitive.Track>
 
     {props.value?.map((val, index) => {
-      const isMaxThumb = index === props.value!.length - 1
+      const isMaxThumb = index === props.value!.length - 1;
 
       return (
         <SliderPrimitive.Thumb
@@ -33,7 +33,7 @@ const Slider = React.forwardRef<
           className={cn(
             "relative block h-4 w-4 rounded-full bg-blue-uala ring-offset-white transition-colors",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2",
-            "disabled:pointer-events-none disabled:opacity-50"
+            "disabled:pointer-events-none disabled:opacity-50",
           )}
         >
           {isMaxThumb && (
@@ -42,10 +42,10 @@ const Slider = React.forwardRef<
             </span>
           )}
         </SliderPrimitive.Thumb>
-      )
+      );
     })}
   </SliderPrimitive.Root>
-))
-Slider.displayName = SliderPrimitive.Root.displayName
+));
+Slider.displayName = SliderPrimitive.Root.displayName;
 
-export { Slider }
+export { Slider };

@@ -1,5 +1,5 @@
-import { Collections } from "@/UI/sections/home/collections";
-import { TransactionHistory } from "@/UI/sections/home/transaction-history";
+import { Collections } from "@/UI/sections/home/Collections";
+import { TransactionHistory } from "@/UI/sections/home/TransactionHistory";
 
 export default function Home() {
   return (

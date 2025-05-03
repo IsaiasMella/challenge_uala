@@ -23,7 +23,10 @@ interface TotalAmountParams {
  * @returns An object with the integer and decimal parts of the total amount.
  */
 
-export const sumTotalAmount = ({ transactions, selectedRange }: TotalAmountParams): TotalAmount => {
+export const sumTotalAmount = ({
+  transactions,
+  selectedRange,
+}: TotalAmountParams): TotalAmount => {
   if (!transactions) return { integer: "0", decimal: "00" };
 
   const { startDate, endDate } = getDateRange(selectedRange);
@@ -33,9 +36,7 @@ export const sumTotalAmount = ({ transactions, selectedRange }: TotalAmountParam
     return transactionDate >= startDate && transactionDate <= endDate;
   });
 
-  const total = filteredTransactions.reduce((acc, transaction) => {
-    return acc + (transaction.amount || 0);
-  }, 0);
+  const total = filteredTransactions.reduce((acc, transaction) => acc + (transaction.amount || 0), 0);
 
   return formatAmount(total);
 };

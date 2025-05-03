@@ -5,23 +5,44 @@ import moment from "moment";
 import "moment/locale/es";
 import { useSearchParams } from "next/navigation";
 
-export const useFilteredTransactions = (transactions: Transaction[], range: string) => {
+/**
+ * Custom hook that filters transactions based on various criteria.
+ * 
+ * This hook filters transactions based on a time range and URL search parameters.
+ * It handles filtering by date range, card type, specific dates, amount,
+ * installments, and payment method.
+ * 
+ * @param {Transaction[]} transactions - Array of transactions to filter
+ * @param {string} range - Time range to filter by (daily, weekly, monthly)
+ * 
+ * @returns {Transaction[]} Filtered array of transactions that match all criteria
+ * 
+ * @example
+ * ```tsx
+ * const filteredTransactions = useFilteredTransactions(transactions, 'weekly');
+ * ```
+ */
+
+export const useFilteredTransactions = (
+  transactions: Transaction[],
+  range: string,
+) => {
   const searchParams = useSearchParams();
-  
+
   const getDateRange = (range: string) => {
     const now = moment();
     const startDate = moment(now);
 
     switch (range) {
       case TIME_RANGES.DIARIO:
-        startDate.startOf('day');
-        return { startDate, endDate: moment(now).endOf('day') };
+        startDate.startOf("day");
+        return { startDate, endDate: moment(now).endOf("day") };
       case TIME_RANGES.SEMANAL:
-        startDate.subtract(6, 'days').startOf('day');
-        return { startDate, endDate: moment(now).endOf('day') };
+        startDate.subtract(6, "days").startOf("day");
+        return { startDate, endDate: moment(now).endOf("day") };
       case TIME_RANGES.MENSUAL:
-        startDate.startOf('month');
-        return { startDate, endDate: moment(now).endOf('day') };
+        startDate.startOf("month");
+        return { startDate, endDate: moment(now).endOf("day") };
       default:
         return { startDate: moment(0), endDate: now };
     }
@@ -31,44 +52,61 @@ export const useFilteredTransactions = (transactions: Transaction[], range: stri
     if (!transactions) return [];
 
     const { startDate, endDate } = getDateRange(range);
-    
-    // Obtener todos los filtros de la URL
-    const selectedCards = searchParams.get('card')?.split(',').filter(Boolean) || [];
-    const selectedDate = searchParams.get('date')?.split(',').filter(Boolean) || [];
-    const selectedAmount = searchParams.get('amount')?.split(',').filter(Boolean) || [];
-    const selectedInstallments = searchParams.get('installments')?.split(',').filter(Boolean) || [];
-    const selectedPaymentMethod = searchParams.get('paymentMethod')?.split(',').filter(Boolean) || [];
 
-    // Siempre filtramos desde las transacciones originales
-    return transactions.filter(transaction => {
-      // Filtro por fecha
+    const selectedCards =
+      searchParams.get("card")?.split(",").filter(Boolean) || [];
+    const selectedDate =
+      searchParams.get("date")?.split(",").filter(Boolean) || [];
+    const selectedAmount =
+      searchParams.get("amount")?.split(",").filter(Boolean) || [];
+    const selectedInstallments =
+      searchParams.get("installments")?.split(",").filter(Boolean) || [];
+    const selectedPaymentMethod =
+      searchParams.get("paymentMethod")?.split(",").filter(Boolean) || [];
+
+    return transactions.filter((transaction) => {
+      // Date range filter
       const transactionDate = moment(transaction.createdAt);
-      const isInDateRange = transactionDate.isBetween(startDate, endDate, undefined, '[]');
+      const isInDateRange = transactionDate.isBetween(
+        startDate,
+        endDate,
+        undefined,
+        "[]",
+      );
       if (!isInDateRange) return false;
 
-      // Filtro por tarjeta
-      if (selectedCards.length > 0 && !selectedCards.includes('todas')) {
-        if (!selectedCards.includes(transaction.card.toLowerCase())) return false;
+      // Card filter
+      if (selectedCards.length > 0 && !selectedCards.includes("todas")) {
+        if (!selectedCards.includes(transaction.card.toLowerCase()))
+          return false;
       }
 
-      // Filtro por fecha específica
+      // Specific date filter
       if (selectedDate.length > 0) {
-        if (!selectedDate.includes(moment(transaction.createdAt).format('YYYY-MM-DD'))) return false;
+        if (
+          !selectedDate.includes(
+            moment(transaction.createdAt).format("YYYY-MM-DD"),
+          )
+        )
+          return false;
       }
 
-      // Filtro por monto
+      // Amount filter
       if (selectedAmount.length > 0) {
-        if (!selectedAmount.includes(transaction.amount.toString())) return false;
+        if (!selectedAmount.includes(transaction.amount.toString()))
+          return false;
       }
 
-      // Filtro por cuotas
+      // Installments filter
       if (selectedInstallments.length > 0) {
-        if (!selectedInstallments.includes(transaction.installments.toString())) return false;
+        if (!selectedInstallments.includes(transaction.installments.toString()))
+          return false;
       }
 
-      // Filtro por método de pago
+      // Payment method filter
       if (selectedPaymentMethod.length > 0) {
-        if (!selectedPaymentMethod.includes(transaction.paymentMethod)) return false;
+        if (!selectedPaymentMethod.includes(transaction.paymentMethod))
+          return false;
       }
 
       return true;

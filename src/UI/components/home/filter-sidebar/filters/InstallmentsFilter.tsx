@@ -5,14 +5,15 @@ import { useFilterSelection } from "@/hooks/useFilterSelection";
 const ALL_INSTALLMENTS = "Todas" as const;
 const INSTALLMENTS = [ALL_INSTALLMENTS, "1", "2", "3", "6", "12"] as const;
 
-type InstallmentOption = typeof INSTALLMENTS[number];
+type InstallmentOption = (typeof INSTALLMENTS)[number];
 
-export const InstallmentsFilter: React.FC<FilterComponentProps<string[]>> = ({ 
-  committedFilters, 
-  onApply 
+export const InstallmentsFilter: React.FC<FilterComponentProps> = ({
+  committedFilters,
+  onApply,
 }) => {
-  const currentSelection = (committedFilters.installments || [])
-    .map(installment => installment.charAt(0).toUpperCase() + installment.slice(1)) as InstallmentOption[];
+  const currentSelection = (committedFilters.installments || []).map(
+    (installment) => installment.charAt(0).toUpperCase() + installment.slice(1),
+  ) as InstallmentOption[];
 
   const { handleSelection, isSelected } = useFilterSelection({
     options: INSTALLMENTS,
@@ -21,9 +22,11 @@ export const InstallmentsFilter: React.FC<FilterComponentProps<string[]>> = ({
     onSelectionChange: (newSelection) => {
       onApply({
         ...committedFilters,
-        installments: newSelection.map(installment => installment.toLowerCase())
+        installments: newSelection.map((installment) =>
+          installment.toLowerCase(),
+        ),
       });
-    }
+    },
   });
 
   return (

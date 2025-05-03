@@ -32,13 +32,14 @@ export default function RootLayout({
           }
         `}</style>
       </head>
-      <body className="antialiased m-auto h-screen" style={{ fontFamily: publicSans.style.fontFamily }}>
+      <body
+        className="antialiased m-auto h-screen"
+        style={{ fontFamily: publicSans.style.fontFamily }}
+      >
         <Providers>
           <NavBar />
           <div className="flex">
-            <div className="hidden sm:flex">
-              <RoutesSideBar />
-            </div>
+            <RoutesSideBar />
             <main className="w-10/12 sm:w-5/12 m-auto pt-[88px]">
               {children}
             </main>
