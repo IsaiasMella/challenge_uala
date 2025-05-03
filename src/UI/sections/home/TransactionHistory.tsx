@@ -6,7 +6,6 @@ import { useSearchParams } from "next/navigation";
 
 import { useTransactionStore } from "@/store/transactionStore";
 
-import { DateRangePicker } from "@/UI/components/home/list-transactions/DateRangePicker";
 import { CardTransaction } from "@/UI/components/home/list-transactions/CardTransaction";
 import { EmptyTransactions } from "@/UI/components/home/list-transactions/EmptyTransactions";
 import { SkeletonCollection } from "@/UI/components/home/skeletons/collection";
@@ -15,6 +14,7 @@ import { filterTransactionsByParams } from "@/features/helpers/filterTransaction
 
 import "moment/locale/es";
 import { FilterSidebar } from "@/UI/sections/home/FilterSidebar";
+import { DateRangePicker } from "@/UI/components/home/list-transactions/DateRangePicker";
 
 export const TransactionHistory = () => {
   const { transactions, isLoading, error, fetchTransactions } = useTransactionStore();
