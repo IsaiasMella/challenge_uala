@@ -1,6 +1,5 @@
 import { es } from "date-fns/locale";
 import { Calendar } from "@/common/calendar";
-import { DateRange } from "react-day-picker";
 
 import { FilterComponentProps } from "@/types/sections/home/filterSidebar";
 import { disabledCalendarDays } from "@/features/helpers/calendar/disabledCalendarDays";

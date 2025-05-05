@@ -3,12 +3,12 @@ import { render, screen } from '@testing-library/react'
 import { FilterFooter } from '@/UI/components/home/filter-sidebar/FilterFooter'
 
 describe('FilterFooter', () => {
-  it('debería renderizar el botón de aplicar filtros', () => {
+  it('should render the apply filters button', () => {
     render(<FilterFooter activeFiltersCount={0} />)
     expect(screen.getByText('Aplicar filtros')).toBeInTheDocument()
   })
 
-  it('debería estar deshabilitado cuando no hay filtros activos', () => {
+  it('should be disabled when there are no active filters', () => {
     render(<FilterFooter activeFiltersCount={0} />)
     const button = screen.getByText('Aplicar filtros')
     expect(button).toBeDisabled()
@@ -16,7 +16,7 @@ describe('FilterFooter', () => {
     expect(button).toHaveClass('cursor-not-allowed')
   })
 
-  it('debería estar habilitado cuando hay filtros activos', () => {
+  it('should be enabled when there are active filters', () => {
     render(<FilterFooter activeFiltersCount={3} />)
     const button = screen.getByText('Aplicar filtros')
     expect(button).not.toBeDisabled()
@@ -24,7 +24,7 @@ describe('FilterFooter', () => {
     expect(button).not.toHaveClass('cursor-not-allowed')
   })
 
-  it('debería tener las clases correctas en el footer', () => {
+  it('should have the correct classes in the footer', () => {
     render(<FilterFooter activeFiltersCount={0} />)
     const footer = screen.getByText('Aplicar filtros').closest('footer')
     expect(footer).toHaveClass('absolute')
@@ -36,7 +36,7 @@ describe('FilterFooter', () => {
     expect(footer).toHaveClass('px-6')
   })
 
-  it('debería tener las clases correctas en el botón', () => {
+  it('should have the correct classes in the button', () => {
     render(<FilterFooter activeFiltersCount={3} />)
     const button = screen.getByText('Aplicar filtros')
     expect(button).toHaveClass('h-12')

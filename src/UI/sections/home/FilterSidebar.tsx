@@ -53,7 +53,7 @@ export const FilterSidebar = () => {
         side="right"
         className="w-full p-0 sm:w-[400px] border-l-0 pt-8"
       >
-        <form className="flex h-full flex-col" onSubmit={handleSubmit}>
+        <form className="flex h-full flex-col" aria-label="Filter form" onSubmit={handleSubmit}>
           <FilterHeader onClearFilters={clearFilters} />
 
           <FilterList
