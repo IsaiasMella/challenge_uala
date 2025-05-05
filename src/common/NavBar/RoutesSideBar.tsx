@@ -38,13 +38,13 @@ export const RoutesSideBar: FC = () => (
             </p>
             <div className="flex flex-col gap-3">
               <Image
-                src="/stores/app-store.jpg"
+                src="/Stores/app-store.jpg"
                 alt="App Store"
                 width={120}
                 height={40}
               />
               <Image
-                src="/stores/google-play.jpg"
+                src="/Stores/google-play.jpg"
                 alt="Google Play"
                 width={120}
                 height={40}

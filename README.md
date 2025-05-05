@@ -1,24 +1,3 @@
-[✅] Crear UI filtros
-[✅] Generar filtros, pero que solo sean aplicados una vez se apreta el boton de "Aplicar filtros"
-[✅] Hacer que los filtros esten en URL para poder guardarlos al renderizar
-[✅] Hacer Navbar Mobile
-[✅] Hacer navBar deskyop
-[✅] Hacer sidebar desktop
-[] Solucionar el problema del primer render que no carga la lista (probablente se arregle en produccion)
-[✅] Hacer empty state para cuando filtras y no hay nada
-[✅] Hacer que los filtros de "Diario", "Semanal" y "Mensual" tambien afecten la lista de transactions (en la app de uala no filtra por dias, seman, mes la lista)
-[✅] Agregar Eslint y prettier
-[✅] Corregir proyecto, ver que cosas estan repetidas y ponerlo en condiciones de entregar
-[✅] Se rompiero varias cosas, hay que arreglarlas:
-    [✅] filtro de "Diario", "semanal", "mensual"
-    [✅] al hacer click en "aplicar cambios" te coloca el filtro de rango de precios si o si
-[✅] Generarle el docstring a todos los hooks y funciones
-[✅] Repasar el estado del pryecto para saber si esta entregable
-[✅] la carpeta de "helpers no se hicieron bien los test"
-[✅] Hacer test
-[] Modificar estilos para desktop
-[] Hacer README
-
 #Nice to have
 
 [] cerealizar los filtros en base 64
