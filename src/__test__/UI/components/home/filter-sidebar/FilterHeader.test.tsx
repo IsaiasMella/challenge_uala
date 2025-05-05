@@ -1,49 +1,53 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { FilterHeader } from '@/UI/components/home/filter-sidebar/FilterHeader'
+import { Sheet } from '@/common/sheet'
 
-// Mock de next/image
 vi.mock('next/image', () => ({
   default: ({ src, alt, width, height }: { src: string; alt: string; width: number; height: number }) => (
     <img src={src} alt={alt} width={width} height={height} />
   )
 }))
 
+const renderWithSheet = (ui: React.ReactNode) => {
+  return render(<Sheet open>{ui}</Sheet>)
+}
+
 describe('FilterHeader', () => {
-  it('debería renderizar el título y el botón de volver', () => {
-    render(<FilterHeader onClearFilters={() => {}} />)
+  it('should render title and back button', () => {
+    renderWithSheet(<FilterHeader onClearFilters={() => {}} />)
     expect(screen.getByText('Filtros')).toBeInTheDocument()
     expect(screen.getByAltText('Volver')).toBeInTheDocument()
   })
 
-  it('debería renderizar el botón de limpiar filtros', () => {
-    render(<FilterHeader onClearFilters={() => {}} />)
+  it('should render clear filters button', () => {
+    renderWithSheet(<FilterHeader onClearFilters={() => {}} />)
     expect(screen.getByText('Limpiar')).toBeInTheDocument()
   })
 
-  it('debería llamar a onClearFilters al hacer clic en el botón de limpiar', () => {
+  it('should call onClearFilters when clicking clear button', () => {
     const mockOnClearFilters = vi.fn()
-    render(<FilterHeader onClearFilters={mockOnClearFilters} />)
-    
+    renderWithSheet(<FilterHeader onClearFilters={mockOnClearFilters} />)
+
     const clearButton = screen.getByText('Limpiar')
     fireEvent.click(clearButton)
-    
+
     expect(mockOnClearFilters).toHaveBeenCalled()
   })
 
-  it('debería tener las clases correctas en el header', () => {
-    render(<FilterHeader onClearFilters={() => {}} />)
+  it('should have correct classes in header', () => {
+    renderWithSheet(<FilterHeader onClearFilters={() => {}} />)
     const header = screen.getByText('Filtros').closest('header')
     expect(header).toHaveClass('px-6')
     expect(header).toHaveClass('pt-12')
     expect(header).toHaveClass('pb-4')
   })
 
-  it('debería tener las clases correctas en el botón de limpiar', () => {
-    render(<FilterHeader onClearFilters={() => {}} />)
+  it('should have correct classes in clear button', () => {
+    renderWithSheet(<FilterHeader onClearFilters={() => {}} />)
     const clearButton = screen.getByText('Limpiar')
     expect(clearButton).toHaveClass('text-gray-400')
     expect(clearButton).toHaveClass('hover:text-gray-600')
     expect(clearButton).toHaveClass('transition-colors')
   })
-}) 
+})

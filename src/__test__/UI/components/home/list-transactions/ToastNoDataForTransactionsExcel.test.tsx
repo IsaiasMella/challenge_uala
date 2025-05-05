@@ -3,13 +3,13 @@ import { render, screen } from '@testing-library/react'
 import { ToastNoDataForTransactionsExcel } from '@/UI/components/home/list-transactions/ToastNoDataForTransactionsExcel'
 
 describe('ToastNoDataForTransactionsExcel', () => {
-  it('debería renderizar el mensaje correctamente', () => {
+  it('should render the message correctly', () => {
     const message = 'No hay datos para exportar'
     render(<ToastNoDataForTransactionsExcel message={message} />)
     expect(screen.getByText(message)).toBeInTheDocument()
   })
 
-  it('debería tener las clases correctas en el contenedor', () => {
+  it('should have the correct classes in container', () => {
     render(<ToastNoDataForTransactionsExcel message="Test" />)
     const container = screen.getByText('Test').parentElement
     expect(container).toHaveClass('bg-blue-uala-dark')

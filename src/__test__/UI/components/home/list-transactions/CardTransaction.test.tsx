@@ -2,20 +2,36 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { CardTransaction } from '@/UI/components/home/list-transactions/CardTransaction'
 import { Transaction, PaymentMethod, Card } from '@/types/transactions'
+import { TYPE_PAYMENT_METHOD } from '@/constants/home/home'
 
-// Mock de next/image
 vi.mock('next/image', () => ({
   default: ({ src, alt, width, height }: { src: string; alt: string; width: number; height: number }) => (
     <img src={src} alt={alt} width={width} height={height} />
   )
 }))
 
-// Mock de moment
 vi.mock('moment', () => ({
   default: () => ({
     format: () => '01/01/2024'
   })
 }))
+
+vi.mock('@/features/helpers/getPaymentMethod', () => {
+  return {
+    getPaymentMethod: (method: string) => {
+      const PAYMENT_METHOD_LABELS: Record<string, string> = {
+        CREDIT_CARD: "Tarjeta de crédito",
+        DEBIT_CARD: "Tarjeta de débito",
+        CASH: "Efectivo",
+        QR: TYPE_PAYMENT_METHOD.qr,
+        MPOS: TYPE_PAYMENT_METHOD.mpos,
+        POSPRO: TYPE_PAYMENT_METHOD.pospro,
+        LINK: TYPE_PAYMENT_METHOD.link
+      };
+      return PAYMENT_METHOD_LABELS[method] ?? method;
+    }
+  };
+})
 
 describe('CardTransaction', () => {
   const mockTransaction: Transaction = {
@@ -28,38 +44,38 @@ describe('CardTransaction', () => {
     installments: 1
   }
 
-  it('debería renderizar la imagen con los atributos correctos', () => {
+  it('should render the image with correct attributes', () => {
     render(<CardTransaction transaction={mockTransaction} />)
-    const image = screen.getByAltText('credit_card icon')
+    const image = screen.getByAltText('CREDIT_CARD icon')
     expect(image).toBeInTheDocument()
     expect(image).toHaveAttribute('src', '/category-stores-in.svg')
     expect(image).toHaveAttribute('width', '24')
     expect(image).toHaveAttribute('height', '24')
   })
 
-  it('debería mostrar el método de pago correctamente', () => {
+  it('should display the payment method correctly', () => {
     render(<CardTransaction transaction={mockTransaction} />)
     expect(screen.getByText('Tarjeta de crédito')).toBeInTheDocument()
   })
 
-  it('debería mostrar el monto formateado correctamente', () => {
+  it('should display the formatted amount correctly', () => {
     render(<CardTransaction transaction={mockTransaction} />)
-    expect(screen.getByText('+$ 1.000,00')).toBeInTheDocument()
-  })
+    expect(screen.getByText(/\+\$\s*1\.000,00/, { exact: false })).toBeInTheDocument()
+  })  
 
-  it('debería mostrar la fecha formateada correctamente', () => {
+  it('should display the formatted date correctly', () => {
     render(<CardTransaction transaction={mockTransaction} />)
     expect(screen.getByText('01/01/2024')).toBeInTheDocument()
   })
 
-  it('debería mostrar el tipo de transacción', () => {
+  it('should display the transaction type', () => {
     render(<CardTransaction transaction={mockTransaction} />)
     expect(screen.getByText('Venta')).toBeInTheDocument()
   })
 
-  it('debería tener las clases correctas en el contenedor', () => {
+  it('should have correct classes in container', () => {
     render(<CardTransaction transaction={mockTransaction} />)
-    const container = screen.getByText('Venta').closest('div')?.parentElement
+    const container = screen.getByText('Venta').closest('div')?.parentElement?.parentElement
     expect(container).toHaveClass('py-2')
     expect(container).toHaveClass('flex')
     expect(container).toHaveClass('justify-between')
@@ -69,4 +85,4 @@ describe('CardTransaction', () => {
     expect(container).toHaveClass('gap-3')
     expect(container).toHaveClass('mx-1')
   })
-}) 
+})

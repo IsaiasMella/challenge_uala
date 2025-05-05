@@ -1,29 +1,31 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { FilterTrigger } from '@/UI/components/home/filter-sidebar/FilterTrigger'
+import { Sheet } from '@/common/sheet'
 
-// Mock de next/image
 vi.mock('next/image', () => ({
   default: ({ src, alt, width, height }: { src: string; alt: string; width: number; height: number }) => (
     <img src={src} alt={alt} width={width} height={height} />
   )
 }))
 
+const renderWithSheet = (ui: React.ReactNode) => render(<Sheet open>{ui}</Sheet>)
+
 describe('FilterTrigger', () => {
-  it('debería renderizar el botón de filtros', () => {
-    render(<FilterTrigger activeFiltersCount={0} />)
+  it('should render the filter button', () => {
+    renderWithSheet(<FilterTrigger activeFiltersCount={0} />)
     const filterButton = screen.getByAltText('Abrir filtros')
     expect(filterButton).toBeInTheDocument()
     expect(filterButton).toHaveAttribute('src', '/common/filters.svg')
   })
 
-  it('no debería mostrar el contador cuando no hay filtros activos', () => {
-    render(<FilterTrigger activeFiltersCount={0} />)
+  it('should not show counter when there are no active filters', () => {
+    renderWithSheet(<FilterTrigger activeFiltersCount={0} />)
     expect(screen.queryByText('0')).not.toBeInTheDocument()
   })
 
-  it('debería mostrar el contador cuando hay filtros activos', () => {
-    render(<FilterTrigger activeFiltersCount={3} />)
+  it('should show counter when there are active filters', () => {
+    renderWithSheet(<FilterTrigger activeFiltersCount={3} />)
     const counter = screen.getByText('3')
     expect(counter).toBeInTheDocument()
     expect(counter).toHaveClass('absolute')
@@ -33,9 +35,9 @@ describe('FilterTrigger', () => {
     expect(counter).toHaveClass('text-white')
   })
 
-  it('debería tener las clases correctas en el contenedor', () => {
-    render(<FilterTrigger activeFiltersCount={0} />)
+  it('should have correct classes in container', () => {
+    renderWithSheet(<FilterTrigger activeFiltersCount={0} />)
     const container = screen.getByAltText('Abrir filtros').parentElement
     expect(container).toHaveClass('relative')
   })
-}) 
+})

@@ -2,16 +2,14 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { FilterList } from '@/UI/components/home/filter-sidebar/FilterList'
 import { FILTERS } from '@/constants/home/filters-sidebar/filters'
-import { FilterId, FilterState } from '@/types/sections/home/filterSidebar'
+import { FilterState } from '@/types/sections/home/filterSidebar'
 
-// Mock de next/image
 vi.mock('next/image', () => ({
   default: ({ src, alt, width, height }: { src: string; alt: string; width: number; height: number }) => (
     <img src={src} alt={alt} width={width} height={height} />
   )
 }))
 
-// Mock de los componentes de filtro
 vi.mock('@/UI/components/home/filter-sidebar/filters/AmountFilter', () => ({
   AmountFilter: () => <div data-testid="amount-filter">Amount Filter</div>
 }))
@@ -55,7 +53,7 @@ describe('FilterList', () => {
   const mockOnSwitchToggle = vi.fn()
   const mockOnChangeFilters = vi.fn()
 
-  it('debería renderizar todos los filtros', () => {
+  it('should render all filters', () => {
     render(
       <FilterList
         activeFilters={mockActiveFilters}
@@ -70,7 +68,7 @@ describe('FilterList', () => {
     })
   })
 
-  it('debería renderizar los íconos de los filtros', () => {
+  it('should render filter icons', () => {
     render(
       <FilterList
         activeFilters={mockActiveFilters}
@@ -85,7 +83,7 @@ describe('FilterList', () => {
     })
   })
 
-  it('debería llamar a onSwitchToggle al cambiar el switch', () => {
+  it('should call onSwitchToggle when switch changes', () => {
     render(
       <FilterList
         activeFilters={mockActiveFilters}
@@ -101,7 +99,7 @@ describe('FilterList', () => {
     expect(mockOnSwitchToggle).toHaveBeenCalledWith(FILTERS[0].id)
   })
 
-  it('debería mostrar el componente de filtro cuando está activo', () => {
+  it('should show filter component when active', () => {
     const activeFilters = { ...mockActiveFilters, amount: true }
     
     render(
@@ -116,7 +114,7 @@ describe('FilterList', () => {
     expect(screen.getByTestId('amount-filter')).toBeInTheDocument()
   })
 
-  it('debería tener las clases correctas en el contenedor principal', () => {
+  it('should have correct classes in main container', () => {
     render(
       <FilterList
         activeFilters={mockActiveFilters}
@@ -134,4 +132,4 @@ describe('FilterList', () => {
     expect(main).toHaveClass('overflow-y-auto')
     expect(main).toHaveClass('mb-24')
   })
-}) 
+})

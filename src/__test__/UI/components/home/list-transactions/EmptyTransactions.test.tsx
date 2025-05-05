@@ -2,7 +2,6 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { EmptyTransactions } from '@/UI/components/home/list-transactions/EmptyTransactions'
 
-// Mock de next/image
 vi.mock('next/image', () => ({
   default: ({ src, alt, width, height }: { src: string; alt: string; width: number; height: number }) => (
     <img src={src} alt={alt} width={width} height={height} />
@@ -10,7 +9,7 @@ vi.mock('next/image', () => ({
 }))
 
 describe('EmptyTransactions', () => {
-  it('debería renderizar la imagen con los atributos correctos', () => {
+  it('should render the image with correct attributes', () => {
     render(<EmptyTransactions />)
     const image = screen.getByAltText('magnifier')
     expect(image).toBeInTheDocument()
@@ -19,12 +18,12 @@ describe('EmptyTransactions', () => {
     expect(image).toHaveAttribute('height', '72')
   })
 
-  it('debería mostrar el mensaje de no resultados', () => {
+  it('should display the no results message', () => {
     render(<EmptyTransactions />)
     expect(screen.getByText('No hay resultados que mostrar. Podés probar usando los filtros.')).toBeInTheDocument()
   })
 
-  it('debería tener las clases correctas en el contenedor', () => {
+  it('should have correct classes in container', () => {
     render(<EmptyTransactions />)
     const container = screen.getByText('No hay resultados que mostrar. Podés probar usando los filtros.').parentElement
     expect(container).toHaveClass('m-auto')
@@ -37,4 +36,4 @@ describe('EmptyTransactions', () => {
     expect(container).toHaveClass('py-6')
     expect(container).toHaveClass('sm:w-5/12')
   })
-}) 
+})

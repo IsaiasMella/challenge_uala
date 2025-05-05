@@ -3,30 +3,27 @@ import { render, screen } from '@testing-library/react'
 import { SkeletonCollection } from '@/UI/components/home/skeletons/collection'
 
 describe('SkeletonCollection', () => {
-  it('debería renderizar dos esqueletos', () => {
+  it('should render two skeletons', () => {
     render(<SkeletonCollection />)
-    const skeletons = screen.getAllByRole('status')
+    const skeletons = screen.getAllByTestId('skeleton')
     expect(skeletons).toHaveLength(2)
   })
 
-  it('debería tener las clases correctas en los esqueletos', () => {
+  it('should have correct classes in skeletons', () => {
     render(<SkeletonCollection />)
-    const skeletons = screen.getAllByRole('status')
-    
-    // Primer esqueleto (más pequeño)
+    const skeletons = screen.getAllByTestId('skeleton')
     expect(skeletons[0]).toHaveClass('max-w-[40px]')
     expect(skeletons[0]).toHaveClass('w-full')
-    
-    // Segundo esqueleto (más grande)
     expect(skeletons[1]).toHaveClass('w-10/12')
   })
 
-  it('debería tener el contenedor con las clases correctas', () => {
+  it('should have correct classes in container', () => {
     render(<SkeletonCollection />)
-    const container = screen.getByRole('status').parentElement
+    const skeletons = screen.getAllByTestId('skeleton')
+    const container = skeletons[0].parentElement
     expect(container).toHaveClass('flex')
     expect(container).toHaveClass('gap-3')
     expect(container).toHaveClass('mx-1')
     expect(container).toHaveClass('mt-4')
   })
-}) 
+})
