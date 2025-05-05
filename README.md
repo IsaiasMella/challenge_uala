@@ -1,22 +1,19 @@
-#Nice to have
-
-[] cerealizar los filtros en base 64
-[] Hacer factory de botones
-[] Agregar hasky
-
 # Web Developer Challenge – Ualá
 
-Una aplicación web para visualizar, filtrar y exportar transacciones, implementada con Next.js 15 y TypeScript.
+![uala banner](https://github.com/user-attachments/assets/d3878a88-7633-4411-a73d-7cf793f72bbc)
+
+
+El proyecto es una aplicación web de cobros online donde los usuarios pueden visualizar, filtrar y analizar sus transacciones. Incluye historial, filtros por fecha, monto, tarjeta y más. Se puede agregar exportación en excel. Todo esto lo podrás ver desplegado en:
+https://challenge-uala.vercel.app/
 
 ---
 
 ## 🔧 Instalación y ejecución
 
-1. **Clona el repositorio**
-
+1. **Clona el repositorio**\
+Sería mejor si lo haces con la llave SSH
    ```bash
-   git clone <tu-repositorio>.git
-   cd <tu-repositorio>
+   git clone https://github.com/IsaiasMella/challenge_uala.git
    ```
 
 2. **Instala dependencias**
@@ -36,150 +33,95 @@ Una aplicación web para visualizar, filtrar y exportar transacciones, implement
 3. **Levanta el servidor en modo desarrollo**
 
    - Con pnpm:
-
      ```bash
      pnpm dev
      ```
-
    - Con npm:
-
      ```bash
      npm run dev
      ```
 
-4. **Construcción para producción**
+---
 
-   ```bash
-   pnpm build   # o npm run build
-   pnpm start   # o npm start
-   ```
+## 🗂️ Arquitectura del proyecto
+
+Este proyecto está dividido en dos grandes partes:
+
+1. **La lógica del negocio**  
+2. **La interfaz de usuario (UI)**
+
+### Sobre la UI
+
+Para que sea más fácil entender y mantener el código, la UI está organizada en dos niveles: **secciones** y **componentes**.
+
+- **Secciones**  
+  Representan bloques grandes de la interfaz, partes importantes de una vista. Suelen agrupar varios componentes más pequeños y reflejan la estructura visual general de la app.
+
+- **Componentes**  
+  Son piezas más pequeñas y reutilizables de la UI, como botones, inputs, tarjetas, etc. Se usan dentro de las secciones para construir secciones.
 
 ---
 
-## 🗂️ Arquitectura de carpetas
+Con esta idea en mente, a continuación te muestro la estructura de carpetas, donde vas a ver claramente para qué se usa cada una.
 
 ```bash
 └── 📁src
-    └── 📁app
-        └── 📁api
-            └── 📁transactions
-                └── 📁filter
-                    └── route.ts
+    └── 📁__test__ 
+    └── 📁app 
         └── favicon.ico
         └── globals.css
         └── layout.tsx
         └── page.tsx
-    └── 📁common
-        └── avatar.tsx
-        └── button.tsx
-        └── calendar.tsx
-        └── input.tsx
-        └── 📁NavBar
-            └── DesktopNavBar.tsx
-            └── MobileNavBar.tsx
-            └── NavItem.tsx
-            └── RoutesSideBar.tsx
-        └── popover.tsx
-        └── sheet.tsx
-        └── skeleton.tsx
-        └── slider.tsx
-        └── switch.tsx
-        └── Toaster.tsx
-        └── toggle.tsx
+    └── 📁common (componentes comunes que se pueden utilizar en cualquier parte de la palicación)
     └── 📁constants
-        └── 📁home
-            └── 📁filters-sidebar
-                └── filters.ts
-            └── home.ts
-    └── 📁features
+    └── 📁features (lógica de negocio y utilidades)
         └── 📁actions
-            └── 📁filterTransactions
-                └── filterByAmountRange.ts
-                └── filterByCards.ts
-                └── filterByDateRange.ts
-                └── filterByInstallments.ts
-                └── filterByPaymentMethods.ts
-                └── index.ts
-        └── 📁helpers
-            └── disabledCalendarDays.ts
-            └── filterTransactionsByParams.ts
-            └── getDateRange.ts
-            └── getPaymentMethod.ts
-            └── sumTotalAmount.ts
+        └── 📁helpers  (utilidades relacionadas al modelo de negocio)
         └── 📁services
             └── 📁api
-                └── api.ts
             └── 📁endpoints
-                └── transactions.ts
-        └── 📁utils
-            └── formatAmount.ts
-            └── 📁style
-                └── cn.ts
+        └── 📁utils  (utilidades que no estan asociadas al modelo de negocio)
     └── 📁hooks
-        └── useDateFilter.ts
-        └── useFilteredTransactions.ts
-        └── useFilterSelection.ts
-    └── 📁lib
     └── 📁providers
-        └── Providers.tsx
-        └── QueryProvider.tsx
-    └── 📁store
-        └── rangeStore.ts
-        └── transactionStore.ts
+    └── 📁store (el contexto de la aplicación)
     └── 📁types
-        └── 📁sections
-            └── 📁home
-                └── filterSidebar.ts
-        └── transactions.ts
     └── 📁UI
         └── 📁components
             └── 📁home
-                └── DateRangePicker.tsx
-                └── 📁filter-sidebar
-                    └── AmountFilter.tsx
-                    └── CardFilter.tsx
-                    └── DateFilter.tsx
-                    └── InstallmentsFilter.tsx
-                    └── PaymentMethodFilter.tsx
-                └── FilterSidebar.tsx
-                └── 📁skeletons
-                    └── collection.tsx
-                └── temporality-collections.tsx
         └── 📁sections
             └── 📁home
-                └── collections.tsx
-                └── transaction-history.tsx
 ```
 
 ---
 
 ## ⚙️ Decisiones técnicas tomadas
 
-- Uso de Next.js 15
-- Gestión de estado con Zustand
-- Patrón Draft + Commit para filtros
-- Organización modular de componentes (carpeta `common`, `UI`, `features`, etc.)
-- Rutas API en `app/api/transactions/filter/route.ts`
-- Tipado estricto con TypeScript
-- Configuración de ESLint y Prettier
-- Compatibilidad pnpm / npm
-- Integración de React Query (`QueryProvider`)
-- Uso de shadcn/ui y componentes personalizados
+-Para realizarla el ejercicio decidí utilizar **[Next.js](https://nextjs.org/docs/pages)** y **[TypeScript](https://www.typescriptlang.org/);** también utilicé patrones de diseño tales como:
 
-_(Descripción de cada punto por completar…)_
+* Stateful / Stateless
+* Componentización
+* Context
+* Hooks
+* Compound Components
+* Controlled Components
+* Lifting State Up
+
+### Justificacion de librerias
+
+| Libreria | Justificación |
+|--------------|--------------|
+| **[Axios](https://axios-http.com/)** | Velocidad de desarrollo y mejor legibilidad |
+| **[zustand](https://zustand-demo.pmnd.rs/)** | Velocidad de desarrollo, mejor legibilidad y escalabilidad |
+| **[Shadcn](https://ui.shadcn.com/)** | Velocidad de desarrollo y mejor legibilidad |
+| **[moment](https://momentjs.com/)** | Velocidad de desarrollo y mejor legibilidad |
 
 ---
 
 ## 🚀 Posibles mejoras a futuro
 
-- Implementar autenticación y gestión de usuarios
-- Caché y revalidación de datos avanzada
-- Tests end-to-end con Cypress o Playwright
-- Documentación de componentes con Storybook
-- Internacionalización (i18n)
-- Mejora de accesibilidad (a11y)
-- Optimización de rendimiento (lazy loading y code splitting)
-
-_(Detalles y prioridades por completar…)_
+- patron Factory para botones y notificaciones
+- cerealizar los filtros en base 64
+- Agregar hasky
+- Agregar pagina de metricas
 
 ---
