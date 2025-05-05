@@ -5,7 +5,7 @@ import { TemporalityCollections } from "@/UI/components/home/collections/Tempora
 
 export const Collections = () => (
     <header className="w-10/12 m-auto space-y-6">
-      <p className="text-lg font-semibold text-gray-800">Tus cobros</p>
+      <p className="text-lg font-semibold text-gray-800 sm:pt-10" >Tus cobros</p>
       <h1 className="sr-only">Cobros</h1>
 
       <TemporalityCollections />

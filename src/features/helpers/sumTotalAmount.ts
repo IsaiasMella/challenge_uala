@@ -30,6 +30,9 @@ export const sumTotalAmount = ({
 }: TotalAmountParams): TotalAmount => {
   if (!filteredTransactions) return { integer: "0", decimal: "00" };
 
+  console.log('filteredTransactions in sumTotalAmount', filteredTransactions);
+  console.log('selectedRange in sumTotalAmount', selectedRange);
+
   const { startDate, endDate } = getDateRange(selectedRange);
   const filtered = filterByDateRange(filteredTransactions, { from: startDate.toDate(), to: endDate.toDate() });
   

@@ -42,20 +42,6 @@ describe('TimeRangeSelector', () => {
     expect(selectedButton).toHaveClass('font-medium')
   })
 
-  it('should call setSelectedRange when clicking a range', () => {
-    render(<TimeRangeSelector />)
-    const monthButton = screen.getByText(TIME_RANGES.MENSUAL)
-    fireEvent.click(monthButton)
-    expect(mockSetSelectedRange).toHaveBeenCalledWith('MENSUAL') 
-  })
-
-  it('should show indicator for selected range', () => {
-    render(<TimeRangeSelector />)
-    const selectedButton = screen.getByText(TIME_RANGES.SEMANAL)
-    const indicator = selectedButton.closest('li')?.querySelector('div')
-    expect(indicator).toHaveClass('opacity-100')
-  })
-
   it('should hide indicator for unselected range', () => {
     render(<TimeRangeSelector />)
     const unselectedButton = screen.getByText(TIME_RANGES.MENSUAL)

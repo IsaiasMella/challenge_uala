@@ -29,15 +29,12 @@ export const TransactionHistory = () => {
   const [transactionsFilteredByParams, setTransactionsFilteredByParams] = useState(filteredTransactions);
 
   useEffect(() => {
-    console.log("🔔 TransactionHistory useEffect arrancó");
     fetchTransactions();
   }, []);
 
   useEffect(() => {
     if (!filteredTransactions) return;
     const filtered = filterTransactionsByParams(filteredTransactions, searchParams);
-
-    console.log("filtered", filtered);
 
     setTransactionsFilteredByParams(filtered);
   }, [filteredTransactions,searchParams]);
