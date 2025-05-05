@@ -40,7 +40,7 @@ export default function RootLayout({
           <NavBar />
           <div className="flex">
             <RoutesSideBar />
-            <main className="w-10/12 sm:w-5/12 m-auto pt-[88px]">
+            <main className="w-10/12 h-full overflow-hidden sm:w-5/12 mx-auto pt-[88px] flex items-start">
               {children}
             </main>
           </div>

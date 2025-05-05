@@ -1,3 +1,12 @@
+type FilterOption = string;
+
+interface UseFilterSelectionProps<T extends FilterOption> {
+  options: readonly T[];
+  allOption?: T;
+  currentSelection: T[];
+  onSelectionChange: (_newSelection: T[]) => void;
+}
+
 /**
  * Custom hook that manages filter selection functionality with support for an "All" option.
  * 
@@ -13,27 +22,7 @@
  * @returns {Object} An object containing:
  *   @property {(option: T) => void} handleSelection - Function to handle option selection/deselection
  *   @property {(option: T) => boolean} isSelected - Function to check if an option is selected
- * 
- * @example
- * ```tsx
- * const { handleSelection, isSelected } = useFilterSelection({
- *   options: ['option1', 'option2'],
- *   allOption: 'all',
- *   currentSelection: ['option1'],
- *   onSelectionChange: (newSelection) => setSelection(newSelection)
- * });
- * ```
  */
-
-type FilterOption = string;
-
-interface UseFilterSelectionProps<T extends FilterOption> {
-  options: readonly T[];
-  allOption?: T;
-  currentSelection: T[];
-  onSelectionChange: (_newSelection: T[]) => void;
-}
-
 export const useFilterSelection = <T extends FilterOption>({
   options,
   allOption,
@@ -41,13 +30,6 @@ export const useFilterSelection = <T extends FilterOption>({
   onSelectionChange,
 }: UseFilterSelectionProps<T>) => {
   const handleSelection = (selectedOption: T) => {
-    // If "All" is selected and a specific option is chosen
-    if (allOption && currentSelection.includes(allOption)) {
-      onSelectionChange([selectedOption]);
-      return;
-    }
-
-    // Handle "All" option selection
     if (allOption && selectedOption === allOption) {
       onSelectionChange(
         currentSelection.includes(allOption) ? [] : [allOption],
@@ -55,7 +37,11 @@ export const useFilterSelection = <T extends FilterOption>({
       return;
     }
 
-    // Normal option toggle
+    if (allOption && currentSelection.includes(allOption)) {
+      onSelectionChange([selectedOption]);
+      return;
+    }
+
     if (currentSelection.includes(selectedOption)) {
       onSelectionChange(
         currentSelection.filter((option) => option !== selectedOption),
@@ -65,7 +51,6 @@ export const useFilterSelection = <T extends FilterOption>({
 
     const newSelection = [...currentSelection, selectedOption];
 
-    // If all options are selected (except "All"), select "All" option
     const allSelected = options
       .filter((option) => option !== allOption)
       .every((option) => newSelection.includes(option));

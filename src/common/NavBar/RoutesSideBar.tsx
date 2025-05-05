@@ -7,7 +7,7 @@ import { NavItem } from "./NavItem";
 export const RoutesSideBar: FC = () => (
   <aside className="hidden sm:flex">
     <div className="sticky left-0 top-0 h-screen w-[280px] bg-white shadow-sm" >
-      <div className="flex w-10/12 m-auto h-full flex-col mt-8">
+      <div className="flex w-10/12 m-auto h-full flex-col pt-8">
         <div className="flex gap-2 items-center justify-start ml-1">
           <Image
             src="/uala_logo.svg"

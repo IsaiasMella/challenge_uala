@@ -4,7 +4,7 @@ import { ValueOf } from "next/dist/shared/lib/constants";
 
 interface RangeState {
   selectedRange: ValueOf<typeof TIME_RANGES>;
-  setSelectedRange: (range: ValueOf<typeof TIME_RANGES>) => void;
+  setSelectedRange: (_range: ValueOf<typeof TIME_RANGES>) => void;
 }
 
 export const useRangeStore = create<RangeState>((set) => ({

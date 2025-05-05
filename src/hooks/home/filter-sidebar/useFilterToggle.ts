@@ -7,7 +7,6 @@ import { useSearchParams } from "next/navigation";
 import { handleFilterDeactivation } from "@/features/helpers/list-transactions";
 
 import { usePendingUrlUpdate } from "./usePendingUrlUpdate";
-import { useActiveFiltersFromUrl } from "./useActiveFiltersFromUrl";
 
 import type { FilterId, FilterState } from "@/types/sections/home/filterSidebar";
 
@@ -19,23 +18,23 @@ import type { FilterId, FilterState } from "@/types/sections/home/filterSidebar"
  * function to toggle individual filters on/off.
  * 
  * @param {Dispatch<React.SetStateAction<FilterState>>} setFilterValues - Function to update filter values
+ * @param {Dispatch<React.SetStateAction<Record<FilterId, boolean>>>} setActiveFilters - Function to update active filters state
  * 
  * @returns {Object} An object containing:
  *   @property {(id: FilterId) => void} switchToggle - Function to toggle a specific filter
  * 
  * @example
  * ```tsx
- * const { switchToggle } = useFilterToggle(setFilterValues);
+ * const { switchToggle } = useFilterToggle(setFilterValues, setActiveFilters);
  * ```
  */
 
 export const useFilterToggle = (
     setFilterValues: Dispatch<React.SetStateAction<FilterState>>,
+    setActiveFilters: Dispatch<React.SetStateAction<Record<FilterId, boolean>>>
 ) => {
     const searchParams = useSearchParams();
-
     const { setPendingUrlUpdate } = usePendingUrlUpdate();
-    const { setActiveFilters } = useActiveFiltersFromUrl();
 
     const switchToggle = useCallback(
         (id: FilterId) => {

@@ -2,6 +2,12 @@ import { DEFAULT_AMOUNT_VALUES, URL_PARAMS } from "@/constants/home/filters-side
 
 import type { FilterId, FilterState } from "@/types/sections/home/filterSidebar";
 
+/**
+ * Handles the deactivation of a specific filter by removing its parameters from the URL and resetting its state
+ * @param id - The ID of the filter to deactivate
+ * @param params - URLSearchParams object containing the current URL parameters
+ * @param setFilterValues - React setState function to update the filter values
+ */
 export const handleFilterDeactivation = (
     id: FilterId,
     params: URLSearchParams,

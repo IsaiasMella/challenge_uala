@@ -17,10 +17,16 @@ import { FilterSidebar } from "@/UI/sections/home/FilterSidebar";
 import { DateRangePicker } from "@/UI/components/home/list-transactions/DateRangePicker";
 
 export const TransactionHistory = () => {
-  const { transactions, isLoading, error, fetchTransactions } = useTransactionStore();
-  const [filteredTransactions, setFilteredTransactions] = useState(transactions);
-
   const searchParams = useSearchParams();
+
+  const { 
+    isLoading,
+    error,
+    fetchTransactions,
+    filteredTransactions,
+  } = useTransactionStore();
+
+  const [transactionsFilteredByParams, setTransactionsFilteredByParams] = useState(filteredTransactions);
 
   useEffect(() => {
     console.log("🔔 TransactionHistory useEffect arrancó");
@@ -28,13 +34,14 @@ export const TransactionHistory = () => {
   }, []);
 
   useEffect(() => {
-    if (!transactions) return;
-    const filtered = filterTransactionsByParams(transactions, searchParams);
+    if (!filteredTransactions) return;
+    const filtered = filterTransactionsByParams(filteredTransactions, searchParams);
 
     console.log("filtered", filtered);
 
-    setFilteredTransactions(filtered);
-  }, [transactions, searchParams]);
+    setTransactionsFilteredByParams(filtered);
+  }, [filteredTransactions,searchParams]);
+
 
   if (isLoading)
     return Array.from({ length: 10 }).map((_, index) => (
@@ -53,10 +60,10 @@ export const TransactionHistory = () => {
           <DateRangePicker />
         </div>
       </div>
-      {filteredTransactions.length === 0 && !isLoading && !error && (
+      {transactionsFilteredByParams.length === 0 && !isLoading && !error && (
         <EmptyTransactions />
       )}
-      {filteredTransactions?.toReversed().map((transaction) => (
+      {transactionsFilteredByParams?.toReversed().map((transaction) => (
         <CardTransaction key={transaction.id} transaction={transaction} />
       ))}
     </section>

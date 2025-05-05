@@ -1,6 +1,6 @@
 'use client'
 
-import { Dispatch, SetStateAction, useCallback } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -15,47 +15,46 @@ import {
 import type { FilterId, FilterState } from "@/types/sections/home/filterSidebar";
 
 /**
- * Custom hook that manages filter URL parameters and their updates.
- * 
- * This hook handles the synchronization between filter values and URL parameters,
- * providing functionality to update the URL when filters are submitted. It processes
- * different types of filters (date range, card, installments, amount, payment method)
- * and updates the URL accordingly.
- * 
- * @param {FilterState} filterValues - Current state of all filter values
- * @param {Dispatch<SetStateAction<Record<FilterId, boolean>>>} setActiveFilters - Function to update active filters state
- * 
- * @returns {Object} An object containing:
- *   @property {(event: React.FormEvent<HTMLFormElement>) => void} onSubmitFilters - Form submission handler that updates URL parameters
- * 
+ * Hook personalizado para gestionar y sincronizar los filtros con los parámetros de la URL.
+ *
+ * Este hook actualiza los parámetros de la URL según los valores de los filtros activos,
+ * permitiendo mantener el estado de los filtros en la URL y facilitando la navegación y el share de estados.
+ * Procesa distintos tipos de filtros (rango de fechas, tarjeta, cuotas, monto y método de pago)
+ * y actualiza la URL en consecuencia. Si el filtro de monto está activo, también lo procesa.
+ *
+ * @param {FilterState} filterValues - Estado actual de todos los filtros.
+ * @param {Dispatch<SetStateAction<Record<FilterId, boolean>>>} setActiveFilters - Setter para actualizar el estado de filtros activos.
+ * @param {Record<FilterId, boolean>=} activeFilters - (Opcional) Estado actual de los filtros activos.
+ *
+ * @returns {Object} Un objeto con:
+ *   @property {() => void} onSubmitFilters - Handler para actualizar los parámetros de la URL según los filtros seleccionados.
+ *
  * @example
  * ```tsx
- * const { onSubmitFilters } = useFilterUrlManagement(filterValues, setActiveFilters);
+ * const { onSubmitFilters } = useFilterUrlManagement(filterValues, setActiveFilters, activeFilters);
  * ```
  */
 
 export const useFilterUrlManagement = (
     filterValues: FilterState,
     setActiveFilters: Dispatch<SetStateAction<Record<FilterId, boolean>>>,
+    activeFilters?: Record<FilterId, boolean>
 ) => {
     const searchParams = useSearchParams();
     const router = useRouter();
 
-    const onSubmitFilters = useCallback(
-        (event: React.FormEvent<HTMLFormElement>) => {
-            event.preventDefault();
-            const params = new URLSearchParams(searchParams.toString());
+    const onSubmitFilters = () => {
+        const params = new URLSearchParams(searchParams.toString());
 
-            handleDateRangeUrlParams(filterValues.date, params, setActiveFilters);
-            handleCardUrlParams(filterValues.card, params, setActiveFilters);
-            handleInstallmentsUrlParams(filterValues.installments, params, setActiveFilters);
-            handleAmountUrlParams(filterValues.amount, params, setActiveFilters);
-            handlePaymentMethodUrlParams(filterValues.paymentMethod, params, setActiveFilters);
+        handleDateRangeUrlParams(filterValues.date, params, setActiveFilters);
+        handleCardUrlParams(filterValues.card, params, setActiveFilters);
+        handleInstallmentsUrlParams(filterValues.installments, params, setActiveFilters);
+        if (activeFilters?.amount) { handleAmountUrlParams(filterValues.amount, params, setActiveFilters) }
+        handlePaymentMethodUrlParams(filterValues.paymentMethod, params, setActiveFilters);
 
-            router.push(`?${params.toString()}`, { scroll: false });
-        },
-        [filterValues, router, searchParams, setActiveFilters]
-    );
+
+        router.push(`?${params.toString()}`, { scroll: false });
+    }
 
     return { onSubmitFilters };
 };

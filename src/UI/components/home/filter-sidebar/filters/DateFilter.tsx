@@ -3,7 +3,7 @@ import { Calendar } from "@/common/calendar";
 import { DateRange } from "react-day-picker";
 
 import { FilterComponentProps } from "@/types/sections/home/filterSidebar";
-import { disabledCalendarDays } from "@/features/helpers/disabledCalendarDays";
+import { disabledCalendarDays } from "@/features/helpers/calendar/disabledCalendarDays";
 import { Button } from "@/common/button";
 import { useDateFilter } from "@/hooks/useDateFilter";
 

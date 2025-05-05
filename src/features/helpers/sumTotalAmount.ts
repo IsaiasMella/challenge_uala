@@ -5,6 +5,7 @@ import { formatAmount } from "../utils/formatAmount";
 
 import { TIME_RANGES } from "@/constants/home/home";
 import type { Transaction } from "@/types/transactions";
+import { filterByDateRange } from "../actions/filterTransactions/filterByDateRange";
 
 interface TotalAmount {
   integer: string;
@@ -12,31 +13,27 @@ interface TotalAmount {
 }
 
 interface TotalAmountParams {
-  transactions: Transaction[];
+  filteredTransactions: Transaction[];
   selectedRange: ValueOf<typeof TIME_RANGES>;
 }
 
 /**
  * Calculates the total amount of transactions for a given time range.
- * @param transactions - The transactions to calculate the total amount for.
+ * @param filteredTransactions - The transactions to calculate the total amount for.
  * @param selectedRange - The time range to calculate the total amount for.
  * @returns An object with the integer and decimal parts of the total amount.
  */
 
 export const sumTotalAmount = ({
-  transactions,
+  filteredTransactions,
   selectedRange,
 }: TotalAmountParams): TotalAmount => {
-  if (!transactions) return { integer: "0", decimal: "00" };
+  if (!filteredTransactions) return { integer: "0", decimal: "00" };
 
   const { startDate, endDate } = getDateRange(selectedRange);
-
-  const filteredTransactions = transactions.filter((transaction) => {
-    const transactionDate = new Date(transaction.createdAt);
-    return transactionDate >= startDate && transactionDate <= endDate;
-  });
-
-  const total = filteredTransactions.reduce((acc, transaction) => acc + (transaction.amount || 0), 0);
+  const filtered = filterByDateRange(filteredTransactions, { from: startDate.toDate(), to: endDate.toDate() });
+  
+  const total = filtered.reduce((acc, transaction) => acc + transaction.amount, 0);
 
   return formatAmount(total);
 };

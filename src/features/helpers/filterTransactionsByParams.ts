@@ -1,3 +1,6 @@
+import moment from "moment";
+import "moment/locale/es";
+
 import {
   filterByCards,
   filterByDateRange,
@@ -5,11 +8,16 @@ import {
   filterByInstallments,
   filterByPaymentMethods,
 } from "../actions/filterTransactions";
-import type { Transaction } from "@/types/transactions";
-import moment from "moment";
-import "moment/locale/es";
-import { URL_PARAMS } from "@/constants/home/filters-sidebar/filters";
 
+import { URL_PARAMS } from "@/constants/home/filters-sidebar/filters";
+import type { Transaction } from "@/types/transactions";
+
+/**
+ * Filters an array of transactions based on URL search parameters
+ * @param transactions - Array of transactions to filter
+ * @param searchParams - URLSearchParams object containing filter parameters
+ * @returns Filtered array of transactions based on all active filters in the URL parameters
+ */
 export const filterTransactionsByParams = (
   transactions: Transaction[],
   searchParams: URLSearchParams,
@@ -37,10 +45,11 @@ export const filterTransactionsByParams = (
       ? moment(dateTo, "YYYY-MM-DD").toDate()
       : moment().toDate();
 
-    dateRange = {
-      from: dateFrom ? moment(from).startOf("day").toDate() : from,
-      to: dateTo ? moment(to).endOf("day").toDate() : to,
-    };
+      dateRange = {
+        from: dateFrom ? moment.utc(from).startOf("day").toDate() : from,
+        to: dateTo ? moment.utc(to).endOf("day").toDate() : to,
+      };
+       
   }
 
   let transactionsFiltered = transactions;

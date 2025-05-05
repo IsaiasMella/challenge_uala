@@ -3,7 +3,7 @@ import { TransactionHistory } from "@/UI/sections/home/TransactionHistory";
 
 export default function Home() {
   return (
-    <main>
+    <main className="h-full w-full">
       <Collections />
       <TransactionHistory />
     </main>

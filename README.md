@@ -4,14 +4,17 @@
 [✅] Hacer Navbar Mobile
 [✅] Hacer navBar deskyop
 [✅] Hacer sidebar desktop
-[⚠️] Solucionar el problema del primer render que no carga la lista (probablente se arregle en produccion)
+[] Solucionar el problema del primer render que no carga la lista (probablente se arregle en produccion)
 [✅] Hacer empty state para cuando filtras y no hay nada
-[🤔] Hacer que los filtros de "Diario", "Semanal" y "Mensual" tambien afecten la lista de transactions (en la app de uala no filtra por dias, seman, mes la lista)
+[] Hacer que los filtros de "Diario", "Semanal" y "Mensual" tambien afecten la lista de transactions (en la app de uala no filtra por dias, seman, mes la lista)
 [✅] Agregar Eslint y prettier
-[] Corregir proyecto, ver que cosas estan repetidas y ponerlo en condiciones de entregar
-[] Se rompiero varias cosas, hay que arreglarlas:
-    [] filtro de "Diario", "semanal", "mensual"
-    [] al hacer click en "aplicar cambios" te coloca el filtro de rango de precios si o si
+[✅] Corregir proyecto, ver que cosas estan repetidas y ponerlo en condiciones de entregar
+[✅] Se rompiero varias cosas, hay que arreglarlas:
+    [✅] filtro de "Diario", "semanal", "mensual"
+    [✅] al hacer click en "aplicar cambios" te coloca el filtro de rango de precios si o si
+[✅] Generarle el docstring a todos los hooks y funciones
+[✅] Repasar el estado del pryecto para saber si esta entregable
+[✅] la carpeta de "helpers no se hicieron bien los test"
 [] Hacer test
 [] Modificar estilos para desktop
 [] Hacer README

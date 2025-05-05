@@ -5,19 +5,19 @@ import { useState } from "react";
 import Image from "next/image";
 
 import "moment/locale/es";
-import moment from "moment";
+
 import { es } from "date-fns/locale";
-import { utils, writeFile } from "xlsx";
 import { DateRange } from "react-day-picker";
 
 import { useTransactionStore } from "@/store/transactionStore";
-import { disabledCalendarDays } from "@/features/helpers/disabledCalendarDays";
-
-import { toast } from "sonner";
+import { disabledCalendarDays } from "@/features/helpers/calendar/disabledCalendarDays";
 
 import { Button } from "@/common/button";
 import { Calendar } from "@/common/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/common/popover";
+
+import { useExcelTransactionExport } from "@/hooks/useExcelTransactionExport";
+import { calendarFormatters } from "@/features/helpers/calendar/calendarFormatters";
 
 export function DateRangePicker() {
   const [date, setDate] = useState<DateRange | undefined>();
@@ -25,44 +25,8 @@ export function DateRangePicker() {
 
   const { transactions } = useTransactionStore();
 
-  const handleDownload = () => {
-    if (!date?.from || !transactions) return;
-
-    const fromDate = moment(date.from);
-    const toDate = moment(date.to || date.from);
-    const book = utils.book_new();
-
-    const filteredTransactions = transactions.filter((transaction) => {
-      const transactionDate = moment(transaction.createdAt);
-      const adjustedToDate = moment(toDate).endOf('day');
-      return transactionDate.isBetween(fromDate, adjustedToDate, undefined, '[]');
-    });
-
-    if (filteredTransactions.length === 0) {
-      toast.custom(() => (
-        <div className="bg-blue-uala-dark text-white px-4 py-3 rounded-md">
-          <p>No hay movimientos en las fechas seleccionadas para descargar</p>
-        </div>
-      ));
-      return;
-    }
-
-    const excelData = filteredTransactions.map((transaction) => ({
-      ID: transaction.id,
-      Monto: transaction.amount,
-      Tarjeta: transaction.card,
-      Cuotas: transaction.installments,
-      "Fecha de Creación": moment(transaction.createdAt).format('L'),
-      "Fecha de Actualización": moment(transaction.updatedAt).format('L'),
-      "Método de Pago": transaction.paymentMethod,
-    }));
-
-    const sheet = utils.json_to_sheet(excelData);
-    utils.book_append_sheet(book, sheet, "Transacciones");
-
-    writeFile(book, "transacciones.xlsx");
-    setOpen(false);
-  };
+  const labelToast = "No hay movimientos en las fechas seleccionadas para descargar";
+  const { handleDownload } = useExcelTransactionExport({date, transactions, labelToast});
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -89,18 +53,13 @@ export function DateRangePicker() {
             weekStartsOn={0}
             hideHead={false}
             showOutsideDays={true}
-            formatters={{
-              formatWeekdayName: (weekday) => {
-                const dayName = weekday.toLocaleString("es", { weekday: "short" });
-                return dayName.charAt(0).toUpperCase() + dayName.slice(1);
-              },
-            }}
+            formatters={calendarFormatters}
             classNames={{
               day_selected: "bg-blue-600 text-white hover:bg-blue-600 hover:text-white focus:bg-blue-600 focus:text-white",
               day_today: "bg-gray-100 text-gray-900",
               day_outside: "invisible",
               caption: "flex justify-center pt-1 relative items-center",
-              caption_label: "text-sm font-medium capitalize",
+              caption_label: "text-sm font-medium capitalize"
             }}
           />
           <div className="flex justify-end gap-4">

@@ -2,6 +2,11 @@ import { DEFAULT_AMOUNT_VALUES, SEPARATORS, URL_PARAMS } from "@/constants/home/
 import { parseDateRange } from "./parseDateRange";
 import { FilterState } from "@/types/sections/home/filterSidebar";
 
+/**
+ * Parses all filter parameters from URL search params into a FilterState object
+ * @param params - URLSearchParams object containing all filter parameters
+ * @returns FilterState object with all filter values parsed from URL parameters
+ */
 export const parseFilterStateFromURLParams = (params: URLSearchParams): FilterState => {
   return {
     date: parseDateRange(params),

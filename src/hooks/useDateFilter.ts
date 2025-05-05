@@ -4,6 +4,11 @@ import { useState, useEffect, useCallback } from "react";
 import { DateRange } from "react-day-picker";
 import { FilterComponentProps } from "@/types/sections/home/filterSidebar";
 
+interface UseDateFilterProps {
+  committedFilters: FilterComponentProps["committedFilters"];
+  onApply: FilterComponentProps["onApply"];
+}
+
 /**
  * Custom hook that manages date range filter functionality.
  * 
@@ -27,12 +32,6 @@ import { FilterComponentProps } from "@/types/sections/home/filterSidebar";
  *   useDateFilter({ committedFilters, onApply });
  * ```
  */
-
-interface UseDateFilterProps {
-  committedFilters: FilterComponentProps["committedFilters"];
-  onApply: FilterComponentProps["onApply"];
-}
-
 export const useDateFilter = ({
   committedFilters,
   onApply,

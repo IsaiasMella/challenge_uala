@@ -2,6 +2,12 @@ import { SEPARATORS, URL_PARAMS } from "@/constants/home/filters-sidebar/filters
 
 import type { FilterId } from "@/types/sections/home/filterSidebar";
 
+/**
+ * Updates URL parameters and active filters state for installments filter changes
+ * @param installments - Array of selected installment values
+ * @param params - URLSearchParams object to update
+ * @param setActiveFilters - State setter function for active filters
+ */
 export const handleInstallmentsUrlParams = (
     installments: string[],
     params: URLSearchParams,

@@ -7,15 +7,18 @@ import moment from "moment";
 
 interface TransactionState {
   transactions: Transaction[];
+  filteredTransactions: Transaction[];
   isLoading: boolean;
   error: string | null;
   fetchTransactions: () => Promise<void>;
   setTransactions: (_transactions: Transaction[]) => void;
+  setFilteredTransactions: (_filteredTransactions: Transaction[]) => void;
 }
 
 export const useTransactionStore = create<TransactionState>((set) => ({
   transactions: [],
-  isLoading: false,
+  filteredTransactions: [],
+  isLoading: true,
   error: null,
   setTransactions: (transactions) => set({ transactions }),
   fetchTransactions: async () => {
@@ -38,4 +41,5 @@ export const useTransactionStore = create<TransactionState>((set) => ({
       set({ error: errorMessage, isLoading: false });
     }
   },
+  setFilteredTransactions: (filteredTransactions) => set({ filteredTransactions }),
 }));

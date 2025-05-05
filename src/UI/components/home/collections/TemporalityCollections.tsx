@@ -9,13 +9,14 @@ import { useTransactionStore } from "@/store/transactionStore";
 import { sumTotalAmount } from "@/features/helpers/sumTotalAmount";
 
 export const TemporalityCollections = () => {
-  const { transactions, isLoading, error } = useTransactionStore();
+  const { filteredTransactions, isLoading, error } = useTransactionStore();
   const { selectedRange } = useRangeStore();
 
-  const totalAmount = sumTotalAmount({ transactions, selectedRange });
+  const totalAmount = sumTotalAmount({ filteredTransactions, selectedRange });
+  
 
   return (
-    <div className="w-full flex flex-col gap-3">
+    <div className="w-full h-full flex flex-col gap-3">
       <TimeRangeSelector />
       <TotalAmount
         totalAmount={totalAmount}

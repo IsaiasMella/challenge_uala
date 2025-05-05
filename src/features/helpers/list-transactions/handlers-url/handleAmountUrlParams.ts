@@ -1,7 +1,15 @@
+'use client'
+
 import { DEFAULT_AMOUNT_VALUES, URL_PARAMS } from "@/constants/home/filters-sidebar/filters";
 
 import type { FilterId } from "@/types/sections/home/filterSidebar";
 
+/**
+ * Updates URL parameters and active filters state for amount range filter changes
+ * @param amount - Object containing min and max amount values
+ * @param params - URLSearchParams object to update
+ * @param setActiveFilters - State setter function for active filters
+ */
 export const handleAmountUrlParams = (
     amount: { min: number; max: number },
     params: URLSearchParams,
