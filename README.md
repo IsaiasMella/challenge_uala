@@ -29,8 +29,14 @@ Sería mejor si lo haces con la llave SSH
      ```bash
      npm install
      ```
+3. **Crea un .env**
 
-3. **Levanta el servidor en modo desarrollo**
+   - coloca la URL de la API:
+     ```bash
+     NEXT_PUBLIC_API_URL=
+     ```
+
+4. **Levanta el servidor en modo desarrollo**
 
    - Con pnpm:
      ```bash
